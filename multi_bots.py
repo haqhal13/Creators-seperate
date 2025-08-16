@@ -156,7 +156,7 @@ async def on_startup():
         if not token or token.startswith("PUT-"):
             log.warning(f"[{brand}] No token set, skipping.")
             continue
-        app_obj = Application.builder().token(token).build()
+        app_obj = Application.builder().token(token).updater(None).build()
         app_obj.add_handler(CommandHandler("start", start))
         app_obj.add_handler(CallbackQueryHandler(on_cb))
         app_obj.bot_data["brand"] = brand
