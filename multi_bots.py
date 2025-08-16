@@ -124,13 +124,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cfg = BOTS[brand]
     pay = cfg["PAYMENT_INFO"]
 
-    keyboard = [
-        [InlineKeyboardButton("💳 Apple/Google Pay (ONE-TIME)", web_app=WebAppInfo(url=pay["shopify_life"]))],
-        [InlineKeyboardButton("💳 Apple/Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))],
-        [InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")],
-        [InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")],
-        [InlineKeyboardButton("💬 Support", callback_data=f"{brand}:support")],
-    ]
+    # Build keyboard dynamically so we don't KeyError on missing links
+    keyboard: list[list[InlineKeyboardButton]] = []
+
+    if "shopify_life" in pay:
+        keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (ONE-TIME)", web_app=WebAppInfo(url=pay["shopify_life"]))])
+    if "shopify_1m" in pay:
+        keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))])
+
+    keyboard.append([InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")])
+    keyboard.append([InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")])
+    keyboard.append([InlineKeyboardButton("💬 Support", callback_data=f"{brand}:support")])
 
     await update.effective_message.reply_text(
         f"{cfg['TITLE']}\n\n{cfg['DESCRIPTION']}",
