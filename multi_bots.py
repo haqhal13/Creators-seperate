@@ -22,7 +22,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": os.getenv("8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8", "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8"),
+        "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/AAA:1",
@@ -39,7 +39,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": os.getenv("8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw", "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw"),
+        "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/BBB:1",
@@ -56,7 +56,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": os.getenv("8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k", "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k"),
+        "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/CCC:1",
@@ -73,7 +73,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": os.getenv("ZAYS_TOKEN", "PUT-ZAYS-TOKEN-HERE"),
+        "TOKEN": "PUT-ZAYS-THEWAY-TOKEN-HERE",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/DDD:1",
@@ -89,7 +89,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": os.getenv("AJ_TOKEN", "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314"),
+        "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/EEE:1",
@@ -106,7 +106,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": os.getenv("8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8", "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8"),
+        "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/FFF:1",
