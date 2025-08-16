@@ -1,38 +1,33 @@
-import os
 import logging
-from datetime import datetime
 import requests
+from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
+# ---------------- Logging ----------------
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("multi-bots")
 
+# ---------------- FastAPI ----------------
 app = FastAPI()
 START_TIME = datetime.now()
 
-# ============== EDIT ME ==============
+# ---------------- Config ----------------
 BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
 
+# Each dict key is the webhook path: /webhook/<brand>
 BOTS = {
-    "b1gburlz": {
-        "TITLE": "💎 **B1gburlz VIP**",
-        "DESCRIPTION": "🎥 One-time payment for **all her tapes & pics!** 🔥",
+    "b1g_butlx": {
+        "TITLE": "💎 **B1G BUTLX VIP**",
+        "DESCRIPTION": (
+            "🎥 One-time payment for **all her tapes & pics!** 🔥\n"
+            "📈 Updated frequently when new tapes drop.\n\n"
+            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
+            "📌 Questions? Link not working? Contact support 🔍👀"
+        ),
         "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PAYMENT_INFO": {
-            "shopify_1m": "https://yourshopify.com/cart/AAA:1",
-            "shopify_life": "https://yourshopify.com/cart/AAB:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-    },
-    "mexicuban": {
-        "TITLE": "💎 **Mexicuban VIP**",
-        "DESCRIPTION": "🎥 One-time payment for **all her tapes + collabs (FanBus etc)** 🔥",
-        "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/BBB:1",
@@ -41,9 +36,14 @@ BOTS = {
             "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "monica": {
+    "monica_minx": {
         "TITLE": "💎 **Monica Minx VIP**",
-        "DESCRIPTION": "🎥 One-time payment for **all tapes & pics!** 👑",
+        "DESCRIPTION": (
+            "🎥 One-time payment for **all tapes & pics!** 👑\n"
+            "📈 Regularly updated with new drops.\n\n"
+            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
+            "📌 Questions? Link not working? Contact support 🔍👀"
+        ),
         "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
@@ -53,10 +53,15 @@ BOTS = {
             "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "exclusivebyaj": {
-        "TITLE": "💎 **ExclusiveByAj VIP**",
-        "DESCRIPTION": "💎 Exclusive drops curated by AJ.",
-        "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
+    "mexicuban": {
+        "TITLE": "💎 **Mexicuban VIP**",
+        "DESCRIPTION": (
+            "🎥 One-time payment for **all her tapes + collabs (FanBus etc)** 🔥\n"
+            "📈 Always updated when new content drops.\n\n"
+            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
+            "📌 Questions? Link not working? Contact support 🔍👀"
+        ),
+        "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/EEE:1",
@@ -65,9 +70,47 @@ BOTS = {
             "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "lilbony1": {
-        "TITLE": "💎 **LilBony1 VIP**",
-        "DESCRIPTION": "🎥 Lifetime access to **all LilBony1’s tapes & pics** 👑",
+    "zaystheway_vip": {
+        "TITLE": "💎 **ZTW VIP**",
+        "DESCRIPTION": (
+            "💎 **Welcome to ZTW VIP!**\n\n"
+            "🔥 Access to **all up-to-date content** (OnlyFans, Patreon, Fansly).\n\n"
+            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
+            "📌 Questions? Link not working? Contact support 🔍👀"
+        ),
+        "TOKEN": "PUT-ZAYSTHEWAY-TOKEN-HERE",  # add real token when you have it
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/DDD:1",
+            "shopify_life": "https://yourshopify.com/cart/DDE:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+    },
+    "exclusivebyaj": {
+        "TITLE": "💎 **ExclusiveByAj VIP**",
+        "DESCRIPTION": (
+            "💎 Exclusive drops curated by AJ.\n\n"
+            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
+            "📌 Questions? Link not working? Contact support 🔍👀"
+        ),
+        "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/AAA:1",
+            "shopify_life": "https://yourshopify.com/cart/AAB:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+    },
+    "lil_bony1": {
+        "TITLE": "💎 **LIL.BONY1 VIP**",
+        "DESCRIPTION": (
+            "🎥 Lifetime access to **all LilBony1’s tapes & pics** 👑\n"
+            "📈 Updated frequently with brand new drops.\n\n"
+            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
+            "📌 Questions? Link not working? Contact support 🔍👀"
+        ),
         "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
@@ -78,11 +121,10 @@ BOTS = {
         },
     },
 }
-# ============ END EDIT ME ============
 
 APPS: dict[str, Application] = {}
 
-# ---------- Shared handlers ----------
+# ---------------- Handlers ----------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     brand = context.bot_data["brand"]
     cfg = BOTS[brand]
@@ -133,7 +175,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await start(update, context)
 
-# ---------- FastAPI ----------
+# ---------------- FastAPI Routes ----------------
 @app.get("/")
 async def root():
     return JSONResponse({"status": "ok", "bots": list(BOTS.keys())})
@@ -170,24 +212,34 @@ async def webhook(brand: str, request: Request):
 async def uptime_head():
     return Response(status_code=200)
 
-# ---------- Helper to set all webhooks ----------
+# ---------------- Helper: set all webhooks ----------------
 def set_all_webhooks():
     for brand, cfg in BOTS.items():
         token = cfg["TOKEN"]
         if not token or token.startswith("PUT-"):
+            log.warning(f"[{brand}] Skipping webhook (no token).")
             continue
         webhook_url = f"{BASE_URL}/webhook/{brand}"
         api_url = f"https://api.telegram.org/bot{token}/setWebhook"
         try:
-            r = requests.post(api_url, json={"url": webhook_url})
-            if r.status_code == 200 and r.json().get("ok"):
+            r = requests.post(
+                api_url,
+                json={
+                    "url": webhook_url,
+                    "drop_pending_updates": True,
+                    "allowed_updates": ["message", "callback_query"],
+                },
+                timeout=20,
+            )
+            ok = r.status_code == 200 and r.json().get("ok")
+            if ok:
                 log.info(f"[{brand}] Webhook set: {webhook_url}")
             else:
-                log.error(f"[{brand}] Failed: {r.text}")
+                log.error(f"[{brand}] Failed setting webhook: {r.text}")
         except Exception as e:
-            log.error(f"[{brand}] Exception: {e}")
+            log.error(f"[{brand}] Error setting webhook: {e}")
 
 if __name__ == "__main__":
-    log.info("Setting all webhooks...")
+    log.info("Setting all webhooks to your Render domain...")
     set_all_webhooks()
-    log.info("Done. Now run with: uvicorn multi_bots:app --host 0.0.0.0 --port 10000")
+    log.info("Done. Start server with: uvicorn multi_bots:app --host 0.0.0.0 --port $PORT")
