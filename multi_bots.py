@@ -20,7 +20,7 @@ BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
 # Each dict key is the webhook path: /webhook/<brand>
 BOTS = {
     "b1g_butlx": {
-        "TITLE": "💎 **B1G BUTLX VIP**",
+        "TITLE": "💎 **B1G BURLZ VIP**",
         "DESCRIPTION": (
             "🎥 One-time payment for **all her tapes & pics!** 🔥\n"
             "📈 Updated frequently when new tapes drop.\n\n"
@@ -30,8 +30,7 @@ BOTS = {
         "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
-            "shopify_1m": "https://yourshopify.com/cart/BBB:1",
-            "shopify_life": "https://yourshopify.com/cart/BBC:1",
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101524603254:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
@@ -47,8 +46,7 @@ BOTS = {
         "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
-            "shopify_1m": "https://yourshopify.com/cart/CCC:1",
-            "shopify_life": "https://yourshopify.com/cart/CCD:1",
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101529452918:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
@@ -64,8 +62,7 @@ BOTS = {
         "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
-            "shopify_1m": "https://yourshopify.com/cart/EEE:1",
-            "shopify_life": "https://yourshopify.com/cart/EEF:1",
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101534138742:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
@@ -82,7 +79,6 @@ BOTS = {
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/DDD:1",
-            "shopify_life": "https://yourshopify.com/cart/DDE:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
@@ -97,8 +93,7 @@ BOTS = {
         "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
-            "shopify_1m": "https://yourshopify.com/cart/AAA:1",
-            "shopify_life": "https://yourshopify.com/cart/AAB:1",
+            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/56080557048182:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
@@ -114,8 +109,7 @@ BOTS = {
         "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
-            "shopify_1m": "https://yourshopify.com/cart/FFF:1",
-            "shopify_life": "https://yourshopify.com/cart/FFG:1",
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101539152246:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
@@ -131,7 +125,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pay = cfg["PAYMENT_INFO"]
 
     keyboard = [
-        [InlineKeyboardButton("💳 Apple/Google Pay (Lifetime)", web_app=WebAppInfo(url=pay["shopify_life"]))],
+        [InlineKeyboardButton("💳 Apple/Google Pay (ONE-TIME)", web_app=WebAppInfo(url=pay["shopify_life"]))],
         [InlineKeyboardButton("💳 Apple/Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))],
         [InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")],
         [InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")],
