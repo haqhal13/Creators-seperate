@@ -1,18 +1,3 @@
-"""
-MULTI-BOT FASTAPI APP (6 BOTS, 1 SERVICE)
------------------------------------------
-✅ Stable webhook mode (cheap + fast).
-✅ One Render service hosts all bots.
-✅ Easy config: just edit the BOTS dictionary below.
-
-SETUP STEPS:
-1. Create 6 bots in BotFather -> get 6 tokens.
-2. Add tokens to Render ENV VARS (recommended) OR temporarily paste them in the placeholders.
-3. Edit each bot’s COPY_TITLE, COPY_BODY, and PAYMENT links.
-4. Deploy to Render.
-5. Run set_webhooks.py once to point Telegram to your Render URLs.
-"""
-
 import os
 import logging
 from datetime import datetime
@@ -27,141 +12,135 @@ log = logging.getLogger("multi-bots")
 app = FastAPI()
 START_TIME = datetime.now()
 
-# ==========================================================
-#  CONFIG: Define your 6 bots here
-# ==========================================================
+# ============== EDIT ME ==============
 BOTS = {
-    "creator1": {
-        "TOKEN": os.getenv("CREATOR1_BOT_TOKEN", "PUT-CREATOR1-TOKEN-HERE"),
-        "SUPPORT": "@YourSupportHandle",
-        "COPY_TITLE": "💎 Creator 1 VIP",
-        "COPY_BODY": (
-            "⚡ Exclusive Creator 1 VIP content.\n\n"
-            "📩 Apple/Google Pay receipts delivered instantly by email."
-        ),
-        "PAYMENT": {
-            "apple_google": "https://yourshopify.com/cart/111:1",  # <-- EDIT
-            "paypal": "PayPal link coming soon",
-            "crypto": "Crypto link coming soon",
+    # Each key becomes your webhook path: /webhook/<brand>
+    "exclusivebyaj": {
+        "TITLE": "💎 **ExclusiveByAj**",
+        "TOKEN": os.getenv("8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314", "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314"),
+        "SUPPORT_CONTACT": "@Sebvip",  # change if needed
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/AAA:1",     # 1 month
+            "shopify_life": "https://yourshopify.com/cart/AAB:1",   # lifetime
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "creator2": {
-        "TOKEN": os.getenv("CREATOR2_BOT_TOKEN", "PUT-CREATOR2-TOKEN-HERE"),
-        "SUPPORT": "@YourSupportHandle",
-        "COPY_TITLE": "🔥 Creator 2 VIP",
-        "COPY_BODY": "Exclusive Creator 2 media access.",
-        "PAYMENT": {
-            "apple_google": "https://yourshopify.com/cart/222:1",
-            "paypal": "PayPal link coming soon",
-            "crypto": "Crypto link coming soon",
+    "b1g_butlx": {
+        "TITLE": "💎 **B1G BUTLX**",
+        "TOKEN": os.getenv("8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8", "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8"),
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/BBB:1",
+            "shopify_life": "https://yourshopify.com/cart/BBC:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "creator3": {
-        "TOKEN": os.getenv("CREATOR3_BOT_TOKEN", "PUT-CREATOR3-TOKEN-HERE"),
-        "SUPPORT": "@YourSupportHandle",
-        "COPY_TITLE": "💎 Creator 3 VIP",
-        "COPY_BODY": "Exclusive Creator 3 media access.",
-        "PAYMENT": {
-            "apple_google": "https://yourshopify.com/cart/333:1",
-            "paypal": "PayPal link coming soon",
-            "crypto": "Crypto link coming soon",
+    "monica_minx": {
+        "TITLE": "💎 **Monica Minx**",
+        "TOKEN": os.getenv("8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k", "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k"),
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/CCC:1",
+            "shopify_life": "https://yourshopify.com/cart/CCD:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "creator4": {
-        "TOKEN": os.getenv("CREATOR4_BOT_TOKEN", "PUT-CREATOR4-TOKEN-HERE"),
-        "SUPPORT": "@YourSupportHandle",
-        "COPY_TITLE": "💎 Creator 4 VIP",
-        "COPY_BODY": "Exclusive Creator 4 media access.",
-        "PAYMENT": {
-            "apple_google": "https://yourshopify.com/cart/444:1",
-            "paypal": "PayPal link coming soon",
-            "crypto": "Crypto link coming soon",
+    "zaystheway_vip": {
+        "TITLE": "💎 **ZAYSTHEWAY VIP**",
+        "TOKEN": os.getenv("ZAYSTHEWAY_BOT_TOKEN", "PUT-ZAYSTHEWAY-TOKEN-HERE"),
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/DDD:1",
+            "shopify_life": "https://yourshopify.com/cart/DDE:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "creator5": {
-        "TOKEN": os.getenv("CREATOR5_BOT_TOKEN", "PUT-CREATOR5-TOKEN-HERE"),
-        "SUPPORT": "@YourSupportHandle",
-        "COPY_TITLE": "💎 Creator 5 VIP",
-        "COPY_BODY": "Exclusive Creator 5 media access.",
-        "PAYMENT": {
-            "apple_google": "https://yourshopify.com/cart/555:1",
-            "paypal": "PayPal link coming soon",
-            "crypto": "Crypto link coming soon",
+    "mexicuban": {
+        "TITLE": "💎 **MEXICUBAN**",
+        "TOKEN": os.getenv("8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw", "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw"),
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/EEE:1",
+            "shopify_life": "https://yourshopify.com/cart/EEF:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "creator6": {
-        "TOKEN": os.getenv("CREATOR6_BOT_TOKEN", "PUT-CREATOR6-TOKEN-HERE"),
-        "SUPPORT": "@YourSupportHandle",
-        "COPY_TITLE": "💎 Creator 6 VIP",
-        "COPY_BODY": "Exclusive Creator 6 media access.",
-        "PAYMENT": {
-            "apple_google": "https://yourshopify.com/cart/666:1",
-            "paypal": "PayPal link coming soon",
-            "crypto": "Crypto link coming soon",
+    "lil_bony1": {
+        "TITLE": "💎 **LIL.BONY1**",
+        "TOKEN": os.getenv("8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8", "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8"),
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://yourshopify.com/cart/FFF:1",
+            "shopify_life": "https://yourshopify.com/cart/FFG:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
         },
     },
 }
+# ============ END EDIT ME ============
 
-# Store Telegram Applications
 APPS: dict[str, Application] = {}
 
-# ==========================================================
-#  HANDLERS
-# ==========================================================
+# ---------- Shared handlers ----------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Universal /start handler."""
     brand = context.bot_data["brand"]
     cfg = BOTS[brand]
+    pay = cfg["PAYMENT_INFO"]
 
-    kb = [
-        [InlineKeyboardButton("Apple Pay & Google Pay", web_app=WebAppInfo(url=cfg["PAYMENT"]["apple_google"]))],
-        [InlineKeyboardButton("PayPal Payment", callback_data=f"{brand}:paypal")],
-        [InlineKeyboardButton("Crypto Payment", callback_data=f"{brand}:crypto")],
+    keyboard = [
+        [InlineKeyboardButton("Apple Pay / Google Pay (Lifetime)", web_app=WebAppInfo(url=pay["shopify_life"]))],
+        [InlineKeyboardButton("Apple Pay / Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))],
+        [InlineKeyboardButton("PayPal (read note)", callback_data=f"{brand}:paypal")],
+        [InlineKeyboardButton("Crypto (instructions)", callback_data=f"{brand}:crypto")],
         [InlineKeyboardButton("Support", callback_data=f"{brand}:support")],
     ]
 
     message = update.effective_message
     await message.reply_text(
-        f"{cfg['COPY_TITLE']}\n\n{cfg['COPY_BODY']}",
-        reply_markup=InlineKeyboardMarkup(kb),
+        f"{cfg['TITLE']}\n\n"
+        "⚡ Instant access (Shopify emails link instantly for Apple/Google Pay)\n"
+        "📌 If anything fails, use Support below.",
+        reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown",
     )
 
-async def handle_actions(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handles PayPal, Crypto, Support, Back, ThankYou buttons."""
+async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
+
     brand, action = q.data.split(":")
     cfg = BOTS[brand]
+    pay = cfg["PAYMENT_INFO"]
 
     if action == "paypal":
         await q.edit_message_text(
-            f"💸 **Pay with PayPal!**\n\n`{cfg['PAYMENT']['paypal']}`\n\n✅ After payment, tap Thank You.",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("✅ Thank You", callback_data=f"{brand}:thankyou")],
-                [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")],
-            ]),
+            text=f"💸 **PayPal**\n\n`{pay['paypal']}`\n\nUse **Friends & Family** only.",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]),
             parse_mode="Markdown",
         )
     elif action == "crypto":
         await q.edit_message_text(
-            f"⚡ **Crypto Payment**\n\n{cfg['PAYMENT']['crypto']}",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("✅ Thank You", callback_data=f"{brand}:thankyou")],
-                [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")],
-            ]),
+            text=f"⚡ **Crypto**\n\n{pay['crypto']}\n\nFollow the instructions in the linked room.",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]),
             parse_mode="Markdown",
         )
-    elif action == "thankyou":
-        await q.edit_message_text("✅ **Thanks for your payment!**\n\nPlease show proof to support.")
     elif action == "support":
-        await q.edit_message_text(f"💬 Need help? Contact {cfg['SUPPORT']}")
+        await q.edit_message_text(
+            text=f"💬 Need help? Contact {cfg['SUPPORT_CONTACT']}",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]),
+            parse_mode="Markdown",
+        )
     elif action == "back":
         await start(update, context)
+    else:
+        await start(update, context)
 
-# ==========================================================
-#  FASTAPI ROUTES
-# ==========================================================
+# ---------- FastAPI ----------
 @app.get("/")
 async def root():
     return JSONResponse({"status": "ok", "bots": list(BOTS.keys())})
@@ -179,7 +158,7 @@ async def on_startup():
             continue
         app_obj = Application.builder().token(token).build()
         app_obj.add_handler(CommandHandler("start", start))
-        app_obj.add_handler(CallbackQueryHandler(handle_actions))
+        app_obj.add_handler(CallbackQueryHandler(on_cb))
         app_obj.bot_data["brand"] = brand
         await app_obj.initialize()
         APPS[brand] = app_obj
