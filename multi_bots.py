@@ -1,6 +1,7 @@
 import os
 import logging
 from datetime import datetime
+import requests
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
@@ -13,15 +14,12 @@ app = FastAPI()
 START_TIME = datetime.now()
 
 # ============== EDIT ME ==============
+BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
+
 BOTS = {
     "b1gburlz": {
         "TITLE": "💎 **B1gburlz VIP**",
-        "DESCRIPTION": (
-            "🎥 One-time payment for **all her tapes & pics!** 🔥\n"
-            "📈 Updated frequently when new tapes drop.\n\n"
-            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-            "📌 Questions? Link not working? Contact support 🔍👀"
-        ),
+        "DESCRIPTION": "🎥 One-time payment for **all her tapes & pics!** 🔥",
         "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
@@ -33,12 +31,7 @@ BOTS = {
     },
     "mexicuban": {
         "TITLE": "💎 **Mexicuban VIP**",
-        "DESCRIPTION": (
-            "🎥 One-time payment for **all her tapes + collabs (FanBus etc)** 🔥\n"
-            "📈 Always updated when new content drops.\n\n"
-            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-            "📌 Questions? Link not working? Contact support 🔍👀"
-        ),
+        "DESCRIPTION": "🎥 One-time payment for **all her tapes + collabs (FanBus etc)** 🔥",
         "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
@@ -50,12 +43,7 @@ BOTS = {
     },
     "monica": {
         "TITLE": "💎 **Monica Minx VIP**",
-        "DESCRIPTION": (
-            "🎥 One-time payment for **all tapes & pics!** 👑\n"
-            "📈 Regularly updated with new drops.\n\n"
-            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-            "📌 Questions? Link not working? Contact support 🔍👀"
-        ),
+        "DESCRIPTION": "🎥 One-time payment for **all tapes & pics!** 👑",
         "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
@@ -65,30 +53,9 @@ BOTS = {
             "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    "zays": {
-        "TITLE": "💎 **ZaysTheWay VIP**",
-        "DESCRIPTION": (
-            "💎 **Welcome to ZTW VIP!**\n\n"
-            "🔥 Access to **all up-to-date content** (OnlyFans, Patreon, Fansly).\n\n"
-            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-            "📌 Questions? Link not working? Contact support 🔍👀"
-        ),
-        "TOKEN": "PUT-ZAYS-THEWAY-TOKEN-HERE",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PAYMENT_INFO": {
-            "shopify_1m": "https://yourshopify.com/cart/DDD:1",
-            "shopify_life": "https://yourshopify.com/cart/DDE:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-    },
     "exclusivebyaj": {
         "TITLE": "💎 **ExclusiveByAj VIP**",
-        "DESCRIPTION": (
-            "💎 Exclusive drops curated by AJ.\n\n"
-            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-            "📌 Questions? Link not working? Contact support 🔍👀"
-        ),
+        "DESCRIPTION": "💎 Exclusive drops curated by AJ.",
         "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
@@ -100,12 +67,7 @@ BOTS = {
     },
     "lilbony1": {
         "TITLE": "💎 **LilBony1 VIP**",
-        "DESCRIPTION": (
-            "🎥 Lifetime access to **all LilBony1’s tapes & pics** 👑\n"
-            "📈 Updated frequently with brand new drops.\n\n"
-            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-            "📌 Questions? Link not working? Contact support 🔍👀"
-        ),
+        "DESCRIPTION": "🎥 Lifetime access to **all LilBony1’s tapes & pics** 👑",
         "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
@@ -207,3 +169,25 @@ async def webhook(brand: str, request: Request):
 @app.head("/uptime")
 async def uptime_head():
     return Response(status_code=200)
+
+# ---------- Helper to set all webhooks ----------
+def set_all_webhooks():
+    for brand, cfg in BOTS.items():
+        token = cfg["TOKEN"]
+        if not token or token.startswith("PUT-"):
+            continue
+        webhook_url = f"{BASE_URL}/webhook/{brand}"
+        api_url = f"https://api.telegram.org/bot{token}/setWebhook"
+        try:
+            r = requests.post(api_url, json={"url": webhook_url})
+            if r.status_code == 200 and r.json().get("ok"):
+                log.info(f"[{brand}] Webhook set: {webhook_url}")
+            else:
+                log.error(f"[{brand}] Failed: {r.text}")
+        except Exception as e:
+            log.error(f"[{brand}] Exception: {e}")
+
+if __name__ == "__main__":
+    log.info("Setting all webhooks...")
+    set_all_webhooks()
+    log.info("Done. Now run with: uvicorn multi_bots:app --host 0.0.0.0 --port 10000")
