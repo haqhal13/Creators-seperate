@@ -17,6 +17,29 @@ START_TIME = datetime.now()
 # ---------------- Config ----------------
 BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
 
+# ---------------- Universal text (edit once, used by all bots) ----------------
+SHARED_TEXT = {
+    "paypal": (
+        "💸 **PayPal**\n\n"
+        "**Price:** {price}\n"
+        "`{paypal_tag}`\n\n"
+        "⚠️ Use **Friends & Family** only.\n"
+        "After paying, tap **I’ve paid** below."
+    ),
+    "crypto": (
+        "₿ **Crypto Payments**\n\n"
+        "**Price:** {price}\n"
+        "Join: {crypto_room}\n\n"
+        "Follow the instructions inside.\n"
+        "After paying, tap **I’ve paid** below."
+    ),
+    "paid_thanks": (
+        "✅ **Thanks for your {method} payment!**\n\n"
+        "• If you paid with **PayPal or Crypto**, message {support} with your receipt and the bot name (**{brand_title}**) so we can verify you.\n"
+        "• If you paid with **Apple Pay / Google Pay / Card**, your access link is **emailed instantly** — check the email on your order (and spam)."
+    ),
+}
+
 # Each dict key is the webhook path: /webhook/<brand>
 BOTS = {
     "b1g_butlx": {
@@ -29,6 +52,7 @@ BOTS = {
         ),
         "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
         "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£15", "crypto": "£15"},  # <— set per-bot
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101524603254:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -45,6 +69,7 @@ BOTS = {
         ),
         "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
         "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£15", "crypto": "£15"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101529452918:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -61,6 +86,7 @@ BOTS = {
         ),
         "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£18", "crypto": "£18"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101534138742:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -75,8 +101,9 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": "PUT-ZAYSTHEWAY-TOKEN-HERE",  # add real token when you have it
+        "TOKEN": "PUT-ZAYSTHEWAY-TOKEN-HERE",  # add real token
         "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£10", "crypto": "£10"},
         "PAYMENT_INFO": {
             "shopify_1m": "https://yourshopify.com/cart/DDD:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -92,6 +119,7 @@ BOTS = {
         ),
         "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
         "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£13", "crypto": "£13"},
         "PAYMENT_INFO": {
             "shopify_1m": "https://nt9qev-td.myshopify.com/cart/56080557048182:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -108,12 +136,14 @@ BOTS = {
         ),
         "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
         "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£12", "crypto": "£12"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101539152246:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
     },
+    # (Your HOB VIP CREATOR block from before can stay as-is; add PRICES there too if needed)
 }
 
 APPS: dict[str, Application] = {}
@@ -124,20 +154,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cfg = BOTS[brand]
     pay = cfg["PAYMENT_INFO"]
 
-    # Build keyboard dynamically so we don't KeyError on missing links
     keyboard: list[list[InlineKeyboardButton]] = []
-
     if "shopify_life" in pay:
         keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (ONE-TIME)", web_app=WebAppInfo(url=pay["shopify_life"]))])
     if "shopify_1m" in pay:
         keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))])
 
+    # Crypto/PayPal (shared flows)
     keyboard.append([InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")])
     keyboard.append([InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")])
     keyboard.append([InlineKeyboardButton("💬 Support", callback_data=f"{brand}:support")])
 
     await update.effective_message.reply_text(
-        f"{cfg['TITLE']}\n\n{cfg['DESCRIPTION']}",
+        f"{cfg['TITLE']}\n\n{cfg['DESCRIPTION']}\n\n"
+        "🧾 **Card orders** (Apple Pay / Google Pay / card) are **emailed instantly** — "
+        "check the email used at checkout (and spam).",
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown",
     )
@@ -146,30 +177,55 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
 
-    brand, action = q.data.split(":")
+    data = q.data.split(":")
+    brand, action = data[0], data[1]
     cfg = BOTS[brand]
     pay = cfg["PAYMENT_INFO"]
+    prices = cfg.get("PRICES", {})
+    support = cfg["SUPPORT_CONTACT"]
+    brand_title = cfg["TITLE"].replace("*", "")  # plain for message
 
     if action == "paypal":
-        await q.edit_message_text(
-            text=f"💸 **PayPal**\n\n`{pay['paypal']}`\n\n⚠️ Use **Friends & Family only**.",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]),
-            parse_mode="Markdown",
+        text = SHARED_TEXT["paypal"].format(
+            price=prices.get("paypal", "£—"),
+            paypal_tag=pay["paypal"],
         )
+        kb = [
+            [InlineKeyboardButton("✅ I’ve paid (PayPal)", callback_data=f"{brand}:paid:paypal")],
+            [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")],
+        ]
+        await q.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+
     elif action == "crypto":
-        await q.edit_message_text(
-            text=f"₿ **Crypto Payments**\n\nJoin: {pay['crypto']}\n\nFollow the instructions inside.",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]),
-            parse_mode="Markdown",
+        text = SHARED_TEXT["crypto"].format(
+            price=prices.get("crypto", "£—"),
+            crypto_room=pay["crypto"],
         )
+        kb = [
+            [InlineKeyboardButton("✅ I’ve paid (Crypto)", callback_data=f"{brand}:paid:crypto")],
+            [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")],
+        ]
+        await q.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+
+    elif action == "paid":
+        method = data[2] if len(data) > 2 else "payment"
+        nice = "PayPal" if method == "paypal" else ("Crypto" if method == "crypto" else "payment")
+        text = SHARED_TEXT["paid_thanks"].format(method=nice, support=support, brand_title=brand_title)
+        kb = [[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]
+        await q.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+
     elif action == "support":
+        kb = [[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]
         await q.edit_message_text(
-            text=f"💬 Need help? Contact {cfg['SUPPORT_CONTACT']}",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]),
+            text=f"💬 Need help? Contact {support}",
+            reply_markup=InlineKeyboardMarkup(kb),
             parse_mode="Markdown",
         )
+
     elif action == "back":
+        # Return to the main menu for this brand
         await start(update, context)
+
     else:
         await start(update, context)
 
