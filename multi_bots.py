@@ -62,7 +62,7 @@ BOTS = {
         ),
         "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£15", "crypto": "£15"},
+        "PRICES": {"paypal": "£6", "crypto": "£6"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101524603254:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -79,7 +79,7 @@ BOTS = {
         ),
         "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£15", "crypto": "£15"},
+        "PRICES": {"paypal": "£6", "crypto": "£6"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101529452918:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -96,7 +96,7 @@ BOTS = {
         ),
         "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£18", "crypto": "£18"},
+        "PRICES": {"paypal": "£15", "crypto": "£15"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101534138742:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -129,7 +129,7 @@ BOTS = {
         ),
         "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£13", "crypto": "£13"},
+        "PRICES": {"paypal": "£8", "crypto": "£8"},
         "PAYMENT_INFO": {
             "shopify_1m": "https://nt9qev-td.myshopify.com/cart/56080557048182:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -146,7 +146,7 @@ BOTS = {
         ),
         "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£12", "crypto": "£12"},
+        "PRICES": {"paypal": "£20", "crypto": "£20"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101539152246:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -169,9 +169,9 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": "PUT-HOB-CREATOR-TOKEN-HERE",  # add the real token when ready
+        "TOKEN": "8332913011:AAEz8LpOgG_FGEmP_7eqrLh23E7_MUNvuvE",  # add the real token when ready
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£—", "crypto": "£—"},  # set your HOB Creator prices here
+        "PRICES": {"paypal": "£25", "crypto": "£25"},  # set your HOB Creator prices here
         "PAYMENT_INFO": {
             # add whichever you use; both are optional and the keyboard is dynamic
             "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_WITH_VARIANT_ID:1",
