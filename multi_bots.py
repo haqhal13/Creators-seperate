@@ -53,7 +53,7 @@ SHARED_TEXT = {
         "✅ **Thanks!**\n\n"
         "Card orders (Apple Pay / Google Pay / card) are **emailed instantly** to the email used at checkout.\n"
         "👉 Please check your inbox and spam for **{brand_title}**.\n\n"
-        "If you don’t see it in 10 minutes, message {support} with your **Order #** or **checkout email**."
+            "If you don’t see it in 10 minutes, message {support} with your **Order #** or **checkout email**."
     ),
     "support_panel": (
         "💬 **Need Assistance?**\n\n"
@@ -226,8 +226,14 @@ BOTS = {
         "TITLE": "💎 HOB VIP CREATOR BUNDLE",
         "DESCRIPTION": start_page_body(
             "💎 HOB VIP CREATOR BUNDLE",
-            "🏛️ Central hub for **all single creator VIP groups**\n"
-            "✅ Includes: B1G BURLZ, Monica Minx, Mexicuban, LIL.BONY1, ExclusiveByAj, ZTW"
+            "🏛️ **Central hub** for all single-creator VIP groups\n"
+            "✅ **Includes:**\n"
+            "- B1G BURLZ\n"
+            "- Monica Minx\n"
+            "- Mexicuban\n"
+            "- LIL.BONY1\n"
+            "- ExclusiveByAj\n"
+            "- ZTW"
         ),
         "TOKEN": "8332913011:AAEz8LpOgG_FGEmP_7eqrLh23E7_MUNvuvE",
         "SUPPORT_CONTACT": "@Sebvip",
