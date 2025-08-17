@@ -152,7 +152,7 @@ BOTS = {
             "⚡ Instant access sent to your email after checkout.\n\n"
             f"{DISCLAIMER}"
         ),
-        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-qdrQru770jXaX58HM",
+        "TOKEN": "7718373318:-qdrQru770jXaX58HM",
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£15", "crypto": "£15"},
         "PLANS": {
