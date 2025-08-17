@@ -18,7 +18,7 @@ START_TIME = datetime.now()
 # ---------------- Config ----------------
 BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
 ADMIN_CHAT_ID = 7914196017  # Admin pings go here for ALL brands
-PAID_DEBOUNCE_SECONDS = 10   # Anti-spam for "I've paid"
+PAID_DEBOUNCE_SECONDS = 60   # Anti-spam for "I've paid"
 
 # Savings + freshness display
 BUNDLE_SAVING_TEXT = "💡 Save £45+ vs buying separately (best value)."
@@ -93,6 +93,10 @@ BOTS = {
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
+        # Optional plan pricing for labels
+        # "PLANS": {
+        #     "lifetime": {"label": "Lifetime", "display": "LIFETIME", "price_gbp": "£6.00"},
+        # },
     },
     "monica_minx": {
         "TITLE": "💎 **Monica Minx VIP**",
@@ -110,10 +114,8 @@ BOTS = {
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
-        # Optional explicit plan step:
         # "PLANS": {
-        #     "1_month": {"label": "1 Month", "display": "1 MONTH", "price_gbp": "£9.00"},
-        #     "lifetime": {"label": "Lifetime", "display": "LIFETIME", "price_gbp": "£15.00"},
+        #     "lifetime": {"label": "Lifetime", "display": "LIFETIME", "price_gbp": "£6.00"},
         # },
     },
     "mexicuban": {
@@ -132,6 +134,9 @@ BOTS = {
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
+        # "PLANS": {
+        #     "lifetime": {"label": "Lifetime", "display": "LIFETIME", "price_gbp": "£15.00"},
+        # },
     },
 
     # ZAYS bot (monthly only: £10)
@@ -143,7 +148,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Got questions ? VIP link not working ? Contact support 🔍👀"
         ),
-        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-",
+        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-qdrQru770jXaX58HM",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             # ⚠️ swap to the real £10 variant when ready
@@ -169,6 +174,9 @@ BOTS = {
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
+        # "PLANS": {
+        #     "1_month": {"label": "1 Month", "display": "1 MONTH", "price_gbp": "£8.00"},
+        # },
     },
     "lil_bony1": {
         "TITLE": "💎 **LIL.BONY1 VIP**",
@@ -186,6 +194,9 @@ BOTS = {
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
+        # "PLANS": {
+        #     "lifetime": {"label": "Lifetime", "display": "LIFETIME", "price_gbp": "£20.00"},
+        # },
     },
 
     # ---------------- HOB VIP CREATOR (BUNDLE) ----------------
@@ -199,17 +210,16 @@ BOTS = {
         ),
         "TOKEN": "8332913011:AAEz8LpOgG_FGEmP_7eqrLh23E7_MUNvuvE",
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£25", "crypto": "£25"},  # You can also sell monthly/lifetime by adding shopify_1m/shopify_life below
+        "PRICES": {"paypal": "£25", "crypto": "£25"},
         "PAYMENT_INFO": {
             "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_WITH_VARIANT_ID:1",  # bundle checkout url
             # "shopify_life": "https://nt9qev-td.myshopify.com/cart/REPLACE_WITH_VARIANT_ID:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
-        # Optional explicit plan step with displayed prices:
         # "PLANS": {
         #     "1_month": {"label": "1 Month", "display": "1 MONTH", "price_gbp": "£25.00"},
-        #     "lifetime": {"label": "Lifetime", "display": "LIFETIME", "price_gbp": "£45.00"},
+        #     # add lifetime here if you sell it
         # },
     },
 }
@@ -218,12 +228,13 @@ APPS: dict[str, Application] = {}
 STARTUP_RESULTS: dict[str, str] = {}  # brand -> "ok" or error message
 
 # ---------------- Helpers ----------------
-def brand_uses_plan_step(cfg: dict) -> bool:
-    """Use plan -> method step if PLANS is defined or both monthly & lifetime card links exist."""
-    if cfg.get("PLANS"):
-        return True
-    pay = cfg.get("PAYMENT_INFO", {})
-    return ("shopify_1m" in pay and "shopify_life" in pay)
+def plan_label(cfg: dict, key: str, fallback: str) -> str:
+    """Return label with optional price e.g. '1 Month (£9.00)'. Uses cfg['PLANS'][key]['price_gbp'] if present."""
+    label = {"1_month": "1 Month", "lifetime": "Lifetime"}.get(key, fallback)
+    plan_cfg = cfg.get("PLANS", {}).get(key)
+    if plan_cfg and plan_cfg.get("price_gbp"):
+        return f"{label} ({plan_cfg['price_gbp']})"
+    return label
 
 def get_plan_price_text(cfg: dict, plan_key: str | None, fallback_price: str) -> str:
     if not plan_key:
@@ -264,22 +275,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pay = cfg["PAYMENT_INFO"]
     keyboard: list[list[InlineKeyboardButton]] = []
 
-    if brand_uses_plan_step(cfg):
-        keyboard.append([InlineKeyboardButton("⭐ Choose plan", callback_data=f"{brand}:choose_plan")])
+    # --- START SCREEN: plan buttons if at least one plan exists ---
+    plan_rows = []
+    has_1m = "shopify_1m" in pay
+    has_life = "shopify_life" in pay
+    if has_1m or has_life:
+        if has_1m:
+            plan_rows.append([InlineKeyboardButton(plan_label(cfg, "1_month", "1 Month"), callback_data=f"{brand}:plan:1_month")])
+        if has_life:
+            plan_rows.append([InlineKeyboardButton(plan_label(cfg, "lifetime", "Lifetime"), callback_data=f"{brand}:plan:lifetime")])
+        keyboard.extend(plan_rows)
     else:
-        # Card buttons (Shopify)
-        if "shopify_life" in pay:
-            keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (ONE-TIME)", web_app=WebAppInfo(url=pay["shopify_life"]))])
-        if "shopify_1m" in pay:
-            keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))])
-        if "shopify_life" in pay or "shopify_1m" in pay:
-            keyboard.append([InlineKeyboardButton("✅ I’ve paid (Card)", callback_data=f"{brand}:paid:card")])
-
-        # Shared flows
+        # No plan buttons available; show direct methods instead
         keyboard.append([InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")])
         keyboard.append([InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")])
 
-    # FAQ + Support
+    # Global actions
     keyboard.append([InlineKeyboardButton("❓ FAQ", callback_data=f"{brand}:faq")])
     keyboard.append([InlineKeyboardButton("💬 Support", callback_data=f"{brand}:support")])
 
@@ -306,7 +317,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = q.data
 
     # ZTW uses its own callback formats:
-    if data.startswith(("select_", "payment_", "paid", "back", "support", "faq")):
+    if data.startswith(("select_", "payment_", "paid", "back", "support", "faq", "copy_")):
         return await ztw_router(q, context)
 
     parts = data.split(":")
@@ -318,32 +329,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     brand_title_plain = cfg["TITLE"].replace("*", "")
     username, user_id = fmt_user(q)
 
-    # ---- PLAN STEP ----
-    if action == "choose_plan":
-        plans = cfg.get("PLANS")
-        btns = []
-        if plans:
-            for key, v in plans.items():
-                label = v.get("label", key.replace("_", " ").title())
-                price = v.get("price_gbp", "")
-                btns.append([InlineKeyboardButton(f"{label}" + (f" ({price})" if price else ""), callback_data=f"{brand}:plan:{key}")])
-        else:
-            if "shopify_1m" in pay:
-                btns.append([InlineKeyboardButton("1 Month", callback_data=f"{brand}:plan:1_month")])
-            if "shopify_life" in pay:
-                btns.append([InlineKeyboardButton("Lifetime", callback_data=f"{brand}:plan:lifetime")])
-        btns.append([InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")])
-        upsell = upsell_button_row()
-        if upsell: btns.append(upsell)
-
-        await admin_ping(context, (
-            "📌 **Plan Menu Opened**\n"
-            f"🏷️ **Brand:** {brand_title_plain}\n"
-            f"👤 **User:** @{username} (`{user_id}`)\n"
-            f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
-        ))
-        return await q.edit_message_text("Select a plan:", reply_markup=InlineKeyboardMarkup(btns), parse_mode="Markdown")
-
+    # ---- PLAN PRESSED (2nd screen like your screenshot #2) ----
     if action == "plan":
         plan_key = parts[2] if len(parts) > 2 else None
         context.user_data["plan_key"] = plan_key
@@ -352,10 +338,10 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         context.user_data["plan_text"] = plan_display or "PLAN"
         kb = [
-            [InlineKeyboardButton("💳 Apple/Google Pay", callback_data=f"{brand}:method:card")],
-            [InlineKeyboardButton("⚡ Crypto", callback_data=f"{brand}:method:crypto")],
-            [InlineKeyboardButton("📧 PayPal", callback_data=f"{brand}:method:paypal")],
-            [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:choose_plan")],
+            [InlineKeyboardButton("💳 Apple Pay/Google Pay 🚀 (Instant Access)", callback_data=f"{brand}:method:card")],
+            [InlineKeyboardButton("⚡ Crypto ⏳ (30 - 60 min wait time)", callback_data=f"{brand}:method:crypto")],
+            [InlineKeyboardButton("📧 PayPal 💌 (30 - 60 min wait time)", callback_data=f"{brand}:method:paypal")],
+            [InlineKeyboardButton("🔙 Go Back", callback_data=f"{brand}:back")],
         ]
         upsell = upsell_button_row()
         if upsell: kb.append(upsell)
@@ -367,7 +353,10 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"👤 **User:** @{username} (`{user_id}`)\n"
             f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
         ))
-        msg = (f"⭐ You chose **{context.user_data['plan_text']}**.\nSelect a payment method:")
+        msg = (
+            f"⭐ You have chosen **{context.user_data['plan_text']}**.\n\n"
+            "Choose a payment method below:"
+        )
         return await q.edit_message_text(msg, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
     if action == "method":
@@ -391,7 +380,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             kb = [
                 [InlineKeyboardButton("📋 Copy PayPal Tag", callback_data=f"{brand}:copy:paypal")],
                 [InlineKeyboardButton("✅ I’ve paid (PayPal)", callback_data=f"{brand}:paid:paypal")],
-                [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:choose_plan")],
+                [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:plan:{plan_key}")],
             ]
             upsell = upsell_button_row()
             if upsell: kb.append(upsell)
@@ -404,7 +393,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             kb = [
                 [InlineKeyboardButton("📋 Copy Crypto Link", callback_data=f"{brand}:copy:crypto")],
                 [InlineKeyboardButton("✅ I’ve paid (Crypto)", callback_data=f"{brand}:paid:crypto")],
-                [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:choose_plan")],
+                [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:plan:{plan_key}")],
             ]
             upsell = upsell_button_row()
             if upsell: kb.append(upsell)
@@ -412,13 +401,13 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if method == "card":
             kb = []
-            # Respect chosen plan if present; otherwise show both
+            # Respect chosen plan
             if (plan_key in ("1_month", None)) and "shopify_1m" in pay:
                 kb.append([InlineKeyboardButton("💳 Apple/Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))])
             if (plan_key in ("lifetime", None)) and "shopify_life" in pay:
                 kb.append([InlineKeyboardButton("💳 Apple/Google Pay (ONE-TIME)", web_app=WebAppInfo(url=pay["shopify_life"]))])
             kb.append([InlineKeyboardButton("✅ I’ve paid (Card)", callback_data=f"{brand}:paid:card")])
-            kb.append([InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:choose_plan")])
+            kb.append([InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:plan:{plan_key}")])
             upsell = upsell_button_row()
             if upsell: kb.append(upsell)
             return await q.edit_message_text(
@@ -427,7 +416,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 parse_mode="Markdown"
             )
 
-    # ---- COPY BUTTONS (works in both plan and direct flows) ----
+    # ---- COPY BUTTONS ----
     if action == "copy":
         what = parts[2]
         if what == "paypal":
@@ -452,7 +441,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ))
         return
 
-    # ---- DIRECT METHOD FLOW (when no plan step) ----
+    # ---- FALLBACK DIRECT FLOW (bots with no plan buttons) ----
     if action == "paypal":
         text = SHARED_TEXT["paypal"].format(price=prices.get("paypal", "£—"), paypal_tag=pay["paypal"])
         kb = [
