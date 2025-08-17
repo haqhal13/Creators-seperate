@@ -209,7 +209,7 @@ BOTS = {
         "PRICES": {"paypal": "£15", "crypto": "£15"},
         "PLANS": {
             "1_month": {"label": "1 Month (£15)", "display": "1 MONTH", "price_gbp": "£15.00"},
-            "3_month": {"label": "3 Months (£31) 🔥 Most Popular", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
+            "3_month": {"label": "🔥 Most Popular . 3 Months (£31) ", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
             "6_month": {"label": "6 Months (£58.50)", "display": "6 MONTHS", "price_gbp": "£58.50"},
         },
         "PAYMENT_INFO": {
@@ -240,7 +240,7 @@ BOTS = {
         "PRICES": {"paypal": "£25", "crypto": "£25"},  # fallback for PayPal/Crypto text
         "PLANS": {
             "1_month": {"label": "1 Month (£15)", "display": "1 MONTH", "price_gbp": "£15.00"},
-            "3_month": {"label": "3 Months (£31) 🔥 Most Popular", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
+            "3_month": {"label": "🔥 Most Popular . 3 Months (£31)", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
             "6_month": {"label": "6 Months (£58.50)", "display": "6 MONTHS", "price_gbp": "£58.50"},
         },
         "PAYMENT_INFO": {
