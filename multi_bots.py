@@ -84,15 +84,19 @@ SHARED_TEXT = {
     ),
 }
 
+# Helper snippet shown on the START screen for specific lifetime bots
+def lifetime_desc_lines(display_name: str) -> str:
+    return (
+        f"🎥 Lifetime access to **all {display_name}’s tapes & pics** 👑\n"
+        "📈 Updated frequently with brand new drops **whenever they post tapes**\n\n"
+        "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+    )
+
 # ---------------- Bots config (EDIT THIS SECTION) ----------------
 BOTS = {
     "b1g_butlx": {
         "TITLE": "💎 **B1G BURLZ VIP**",
-        "DESCRIPTION": (
-            "🎥 One-time payment for **all her tapes & pics!** 🔥\n"
-            "📈 Updated frequently when new tapes drop.\n\n"
-            f"{DISCLAIMER}"
-        ),
+        "DESCRIPTION": lifetime_desc_lines("B1G BURLZ") + f"\n\n{DISCLAIMER}",
         "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£6", "crypto": "£6"},
@@ -107,11 +111,7 @@ BOTS = {
     },
     "monica_minx": {
         "TITLE": "💎 **Monica Minx VIP**",
-        "DESCRIPTION": (
-            "🎥 One-time payment for **all tapes & pics!** 👑\n"
-            "📈 Regularly updated with new drops.\n\n"
-            f"{DISCLAIMER}"
-        ),
+        "DESCRIPTION": lifetime_desc_lines("Monica Minx") + f"\n\n{DISCLAIMER}",
         "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£6", "crypto": "£6"},
@@ -126,11 +126,7 @@ BOTS = {
     },
     "mexicuban": {
         "TITLE": "💎 **Mexicuban VIP**",
-        "DESCRIPTION": (
-            "🎥 One-time payment for **all her tapes + collabs (FanBus etc)** 🔥\n"
-            "📈 Always updated when new content drops.\n\n"
-            f"{DISCLAIMER}"
-        ),
+        "DESCRIPTION": lifetime_desc_lines("Mexicuban") + f"\n\n{DISCLAIMER}",
         "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£15", "crypto": "£15"},
@@ -191,11 +187,7 @@ BOTS = {
     },
     "lil_bony1": {
         "TITLE": "💎 **LIL.BONY1 VIP**",
-        "DESCRIPTION": (
-            "🎥 Lifetime access to **all LilBony1’s tapes & pics** 👑\n"
-            "📈 Updated frequently with brand new drops.\n\n"
-            f"{DISCLAIMER}"
-        ),
+        "DESCRIPTION": lifetime_desc_lines("LilBony1") + f"\n\n{DISCLAIMER}",
         "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£20", "crypto": "£20"},
@@ -277,7 +269,7 @@ def card_button_label(brand: str) -> str:
     return "💳 Apple/Google Pay – Instant Access"
 
 def upsell_button_row() -> list[InlineKeyboardButton]:
-    # As requested: static Linktree upsell
+    # Static Linktree upsell per your ask
     return [InlineKeyboardButton("🔥 Upgrade: HOB VIP CREATOR", url="https://linktr.ee/HOBCREATORS")]
 
 async def admin_ping(context: ContextTypes.DEFAULT_TYPE, text: str):
@@ -326,7 +318,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.effective_message.reply_text(
         f"{cfg['TITLE']}\n\n"
         f"{cfg['DESCRIPTION']}\n\n"
-        f"📅 Last Updated: {last_updated}\n"
+        f"📅 This Bot was Last Updated: *{last_updated}*\n"
         f"{SHARED_TEXT['card_info_inline']}\n"
         f"{BUNDLE_SAVING_TEXT}",
         reply_markup=InlineKeyboardMarkup(keyboard),
@@ -359,6 +351,16 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "1 MONTH" if plan_key == "1_month" else "LIFETIME"
         )
         context.user_data["plan_text"] = plan_display or "PLAN"
+
+        # The detailed selection text you requested
+        selection_text = (
+            f"⭐️ You have chosen the **{context.user_data['plan_text']}** plan.\n\n"
+            "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (**link emailed immediately** — check spam!).\n"
+            "⚡️ **Crypto:** (30 - 60 min wait time), VIP link sent **manually**.\n"
+            "📧 **PayPal:** (30 - 60 min wait time), VIP link sent **manually**.\n\n"
+            "🎉 Choose your preferred payment method below and get access today!"
+        )
+
         kb = [
             [InlineKeyboardButton(card_button_label(brand), callback_data=f"{brand}:method:card")],
             [InlineKeyboardButton("⚡ Crypto ⏳ (30 - 60 min wait)", callback_data=f"{brand}:method:crypto")],
@@ -374,8 +376,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"👤 **User:** @{username} (`{user_id}`)\n"
             f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
         ))
-        msg = (f"⭐ You have chosen **{context.user_data['plan_text']}**.\n\nChoose a payment method below:")
-        return await q.edit_message_text(msg, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        return await q.edit_message_text(selection_text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
     # ---- METHOD CHOSEN ----
     if action == "method":
@@ -575,7 +576,7 @@ async def ztw_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "💎 **Welcome to ZTW VIP Bot!**\n\n"
         "💎 *All up to date content - OF, Patreon, Fansly - from ZTW!*\n"
         "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-        f"📅 Last Updated: {last_updated}\n"
+        f"📅 This Bot was Last Updated: *{last_updated}*\n"
         f"{BUNDLE_SAVING_TEXT}\n\n"
         f"{DISCLAIMER}",
         reply_markup=InlineKeyboardMarkup(keyboard),
@@ -599,6 +600,15 @@ async def ztw_handle_subscription(update: Update, context: ContextTypes.DEFAULT_
         f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
     ))
 
+    # The detailed selection text you requested
+    selection_text = (
+        f"⭐️ You have chosen the **{plan_text}** plan.\n\n"
+        "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (**link emailed immediately** — check spam!).\n"
+        "⚡️ **Crypto:** (30 - 60 min wait time), VIP link sent **manually**.\n"
+        "📧 **PayPal:** (30 - 60 min wait time), VIP link sent **manually**.\n\n"
+        "🎉 Choose your preferred payment method below and get access today!"
+    )
+
     keyboard = [
         [InlineKeyboardButton("💳 Apple Pay/Google Pay 🚀 (Instant Access)", callback_data=f"payment_shopify_{plan_key}")],
         [InlineKeyboardButton("⚡ Crypto ⏳ (30 - 60 min wait)", callback_data=f"payment_crypto_{plan_key}")],
@@ -607,12 +617,8 @@ async def ztw_handle_subscription(update: Update, context: ContextTypes.DEFAULT_
     ]
     keyboard.append(upsell_button_row())
 
-    message = (
-        f"⭐ You chose **{plan_text}**.\n\n"
-        "Pick a payment method below:"
-    )
     await query.edit_message_text(
-        text=message,
+        text=selection_text,
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown"
     )
