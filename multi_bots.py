@@ -143,7 +143,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Got questions ? VIP link not working ? Contact support 🔍👀"
         ),
-        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-qdrQru770jM",
+        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-qdrQru770jXaX58HM",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             # ⚠️ swap to the real £10 variant when ready
