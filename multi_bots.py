@@ -18,7 +18,7 @@ START_TIME = datetime.now()
 # ---------------- Config ----------------
 BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
 ADMIN_CHAT_ID = 7914196017  # Admin pings go here for ALL brands
-PAID_DEBOUNCE_SECONDS = 60   # Anti-spam for "I've paid"
+PAID_DEBOUNCE_SECONDS = 10   # Anti-spam for "I've paid"
 
 # Savings + freshness display
 BUNDLE_SAVING_TEXT = "💡 Save £45+ vs buying separately (best value)."
