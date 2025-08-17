@@ -70,53 +70,57 @@ SHARED_TEXT = {
         "Please include your **Order #** or your **screenshot/transaction ID** (for PayPal/Crypto) so we can help fast."
     ),
     "faq": (
-    "❓ **Frequently Asked Questions (FAQ)**\n\n"
+        "❓ **Frequently Asked Questions (FAQ)**\n\n"
 
-    "• **How do I get my link?**\n"
-    "  • **Card / Apple Pay / Google Pay** → Link is emailed **instantly** to your checkout email.\n"
-    "  • **PayPal / Crypto** → Links are sent **manually** after you show proof of payment.\n\n"
+        "• **How do I get my link?**\n"
+        "  • **Card / Apple Pay / Google Pay** → Link is emailed **instantly** to your checkout email.\n"
+        "  • **PayPal / Crypto** → Links are sent **manually** after you show proof of payment.\n\n"
 
-    "• **I don’t see the email.**\n"
-    "  • Check your **spam/junk folder**.\n"
-    "  • Make sure you entered the **correct email at checkout**.\n"
-    "  • Still nothing after 10 minutes? Contact {support}.\n\n"
+        "• **I don’t see the email.**\n"
+        "  • Check your **spam/junk folder**.\n"
+        "  • Make sure you entered the **correct email at checkout**.\n"
+        "  • Still nothing after 10 minutes? Contact {support}.\n\n"
 
-    "• **What proof do you need for PayPal/Crypto?**\n"
-    "  Send either:\n"
-    "  • A **screenshot** of the transaction, or\n"
-    "  • The **transaction ID/hash**\n"
-    "  ➝ Always include which **bot** you purchased so we know what to send you.\n\n"
+        "• **What proof do you need for PayPal/Crypto?**\n"
+        "  Send either:\n"
+        "  • A **screenshot** of the transaction, or\n"
+        "  • The **transaction ID/hash**\n"
+        "  ➝ Always include which **bot** you purchased so we know what to send you.\n\n"
 
-    "• **Can I upgrade to the all-in-one bundle?**\n"
-    "  ✅ Yes — tap **⬆️ Upgrade: HOB VIP CREATOR BUNDLE** below.\n"
-    "  👉 It’s our **most popular deal** and you {saving} compared to buying groups one by one.\n\n"
+        "• **Can I upgrade to the all-in-one bundle?**\n"
+        "  ✅ Yes — tap **⬆️ Upgrade: HOB VIP CREATOR BUNDLE** below.\n"
+        "  👉 It’s our **most popular deal** and you {saving} compared to buying groups one by one.\n\n"
 
-    "• **What shows on my bank/PayPal statement?**\n"
-    "  💳 Payments are billed under an **education company** (nothing weird).\n"
-    "  Want a custom label? DM {support} before paying and we’ll personalize it.\n\n"
+        "• **What shows on my bank/PayPal statement?**\n"
+        "  💳 Payments are billed under an **education company** (nothing weird).\n"
+        "  Want a custom label? DM {support} before paying and we’ll personalize it.\n\n"
 
-    "• **Do payments renew automatically?**\n"
-    "  • If you picked **monthly/3-month/6-month plans** → they renew automatically unless you cancel.\n"
-    "  • One-time/lifetime payments are **permanent** (no renewal).\n\n"
+        "• **Do payments renew automatically?**\n"
+        "  • If you picked **monthly/3-month/6-month plans** → they renew automatically unless you cancel.\n"
+        "  • One-time/lifetime payments are **permanent** (no renewal).\n\n"
 
-    "• **Can I cancel my subscription?**\n"
-    "  Yes — you can cancel anytime from your payment provider (Shopify, PayPal, or Crypto wallet). \n"
-    "  Access stays until the end of your billing period.\n\n"
+        "• **Can I cancel my subscription?**\n"
+        "  Yes — you can cancel anytime from your payment provider (Shopify, PayPal, or Crypto wallet).\n"
+        "  Access stays until the end of your billing period.\n\n"
 
-    "• **I pressed 'I’ve Paid' but nothing happened.**\n"
-    "  That button just logs your request — you still need to message {support} with proof if you paid via PayPal or Crypto.\n\n"
+        "• **I pressed 'I’ve Paid' but nothing happened.**\n"
+        "  That button just logs your request — you still need to message {support} with proof if you paid via PayPal or Crypto.\n\n"
 
-    "• **How long until I get access after PayPal/Crypto?**\n"
-    "  Usually within **5–15 minutes** if proof is sent, but it can take longer if outside UK hours. Be patient — you’ll always get what you paid for.\n\n"
+        "• **How long until I get access after PayPal/Crypto?**\n"
+        "  Usually within **5–15 minutes** if proof is sent, but it can take longer if outside UK hours. Be patient — you’ll always get what you paid for.\n\n"
 
-    "• **Why should I choose the bundle?**\n"
-    "  • It’s the **cheapest way** to access everything.\n"
-    "  • **Most popular choice** (majority of members buy the bundle).\n"
-    "  • You {saving} instantly vs buying groups separately.\n\n"
+        "• **Why should I choose the bundle?**\n"
+        "  • It’s the **cheapest way** to access everything.\n"
+        "  • **Most popular choice** (majority of members buy the bundle).\n"
+        "  • You {saving} instantly vs buying groups separately.\n\n"
 
-    "• **What if I need help?**\n"
-    "  Contact {support} any time — we’re here to sort out payments, links, or upgrades fast."
-),
+        "• **When was this bot last updated?**\n"
+        "  📅 This bot was **last updated:** {last_updated}\n\n"
+
+        "• **What if I need help?**\n"
+        "  Contact {support} any time — we’re here to sort out payments, links, or upgrades fast."
+    ),
+}
 
 # Helper snippet shown on the START screen for specific lifetime bots
 def lifetime_desc_lines(display_name: str) -> str:
@@ -303,7 +307,7 @@ def card_button_label(brand: str) -> str:
     return "💳 Apple/Google Pay – Instant Access"
 
 def upsell_button_row() -> list[InlineKeyboardButton]:
-    # Static Linktree upsell per your ask
+    # Static Linktree upsell as requested
     return [InlineKeyboardButton("🔥 Upgrade: HOB VIP CREATOR", url="https://linktr.ee/HOBCREATORS")]
 
 async def admin_ping(context: ContextTypes.DEFAULT_TYPE, text: str):
@@ -352,7 +356,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.effective_message.reply_text(
         f"{cfg['TITLE']}\n\n"
         f"{cfg['DESCRIPTION']}\n\n"
-        f"📅 This Bot was Last Updated: *{last_updated}*\n"
+        f"📅 Last Updated: {last_updated}\n"
         f"{SHARED_TEXT['card_info_inline']}\n"
         f"{BUNDLE_SAVING_TEXT}",
         reply_markup=InlineKeyboardMarkup(keyboard),
@@ -386,10 +390,9 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         context.user_data["plan_text"] = plan_display or "PLAN"
 
-        # The detailed selection text you requested
-        selection_text = (
+        explain = (
             f"⭐️ You have chosen the **{context.user_data['plan_text']}** plan.\n\n"
-            "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (**link emailed immediately** — check spam!).\n"
+            "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
             "⚡️ **Crypto:** (30 - 60 min wait time), VIP link sent **manually**.\n"
             "📧 **PayPal:** (30 - 60 min wait time), VIP link sent **manually**.\n\n"
             "🎉 Choose your preferred payment method below and get access today!"
@@ -410,7 +413,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"👤 **User:** @{username} (`{user_id}`)\n"
             f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
         ))
-        return await q.edit_message_text(selection_text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        return await q.edit_message_text(explain, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
     # ---- METHOD CHOSEN ----
     if action == "method":
@@ -567,8 +570,13 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if action == "faq":
         kb = [[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]
         kb.append(upsell_button_row())
+        last_updated = datetime.now().strftime(LAST_UPDATED_FMT)
         return await q.edit_message_text(
-            text=SHARED_TEXT["faq"].format(support=support, saving=BUNDLE_SAVING_TEXT),
+            text=SHARED_TEXT["faq"].format(
+                support=support,
+                saving=BUNDLE_SAVING_TEXT,
+                last_updated=last_updated
+            ),
             reply_markup=InlineKeyboardMarkup(kb),
             parse_mode="Markdown",
         )
@@ -610,7 +618,7 @@ async def ztw_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "💎 **Welcome to ZTW VIP Bot!**\n\n"
         "💎 *All up to date content - OF, Patreon, Fansly - from ZTW!*\n"
         "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-        f"📅 This Bot was Last Updated: *{last_updated}*\n"
+        f"📅 Last Updated: {last_updated}\n"
         f"{BUNDLE_SAVING_TEXT}\n\n"
         f"{DISCLAIMER}",
         reply_markup=InlineKeyboardMarkup(keyboard),
@@ -634,17 +642,15 @@ async def ztw_handle_subscription(update: Update, context: ContextTypes.DEFAULT_
         f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
     ))
 
-    # The detailed selection text you requested
-    selection_text = (
+    message = (
         f"⭐️ You have chosen the **{plan_text}** plan.\n\n"
-        "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (**link emailed immediately** — check spam!).\n"
+        "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
         "⚡️ **Crypto:** (30 - 60 min wait time), VIP link sent **manually**.\n"
         "📧 **PayPal:** (30 - 60 min wait time), VIP link sent **manually**.\n\n"
         "🎉 Choose your preferred payment method below and get access today!"
     )
-
     keyboard = [
-        [InlineKeyboardButton("💳 Apple Pay/Google Pay 🚀 (Instant Access)", callback_data=f"payment_shopify_{plan_key}")],
+        [InlineKeyboardButton("💳 Apple Pay/Google Pay – Instant Access", callback_data=f"payment_shopify_{plan_key}")],
         [InlineKeyboardButton("⚡ Crypto ⏳ (30 - 60 min wait)", callback_data=f"payment_crypto_{plan_key}")],
         [InlineKeyboardButton("📧 PayPal 💌 (30 - 60 min wait)", callback_data=f"payment_paypal_{plan_key}")],
         [InlineKeyboardButton("🔙 Go Back", callback_data="back")],
@@ -652,7 +658,7 @@ async def ztw_handle_subscription(update: Update, context: ContextTypes.DEFAULT_
     keyboard.append(upsell_button_row())
 
     await query.edit_message_text(
-        text=selection_text,
+        text=message,
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown"
     )
@@ -786,8 +792,13 @@ async def ztw_handle_faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
     support = BOTS["zaystheway_vip"]["SUPPORT_CONTACT"]
     kb = [[InlineKeyboardButton("🔙 Go Back", callback_data="back")]]
     kb.append(upsell_button_row())
+    last_updated = datetime.now().strftime(LAST_UPDATED_FMT)
     await query.edit_message_text(
-        text=SHARED_TEXT["faq"].format(support=support, saving=BUNDLE_SAVING_TEXT),
+        text=SHARED_TEXT["faq"].format(
+            support=support,
+            saving=BUNDLE_SAVING_TEXT,
+            last_updated=last_updated
+        ),
         reply_markup=InlineKeyboardMarkup(kb),
         parse_mode="Markdown"
     )
