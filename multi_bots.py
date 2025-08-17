@@ -33,10 +33,20 @@ SHARED_TEXT = {
         "Follow the instructions inside.\n"
         "After paying, tap **I’ve paid** below."
     ),
-    "paid_thanks": (
+    "paid_thanks_pp_crypto": (
         "✅ **Thanks for your {method} payment!**\n\n"
         "• If you paid with **PayPal or Crypto**, message {support} with your receipt and the bot name (**{brand_title}**) so we can verify you.\n"
         "• If you paid with **Apple Pay / Google Pay / Card**, your access link is **emailed instantly** — check the email on your order (and spam)."
+    ),
+    "paid_card": (
+        "✅ **Thanks!**\n\n"
+        "Card orders (Apple Pay / Google Pay / card) are **emailed instantly** to the email used at checkout.\n"
+        "👉 Please check your inbox and spam for **{brand_title}**.\n\n"
+        "If you don’t see it in 10 minutes, message {support}."
+    ),
+    "card_info_inline": (
+        "🧾 **Card orders** (Apple Pay / Google Pay / card) are **emailed instantly** — "
+        "check the email used at checkout (and spam)."
     ),
 }
 
@@ -52,7 +62,7 @@ BOTS = {
         ),
         "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
         "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£15", "crypto": "£15"},  # <— set per-bot
+        "PRICES": {"paypal": "£15", "crypto": "£15"},
         "PAYMENT_INFO": {
             "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101524603254:1",
             "crypto": "https://t.me/+yourCryptoRoom",
@@ -101,7 +111,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Questions? Link not working? Contact support 🔍👀"
         ),
-        "TOKEN": "PUT-ZAYSTHEWAY-TOKEN-HERE",  # add real token
+        "TOKEN": "PUT-ZAYSTHEWAY-TOKEN-HERE",
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£10", "crypto": "£10"},
         "PAYMENT_INFO": {
@@ -143,7 +153,33 @@ BOTS = {
             "paypal": "@YourPayPalTag (F&F only)",
         },
     },
-    # (Your HOB VIP CREATOR block from before can stay as-is; add PRICES there too if needed)
+
+    # ---------------- NEW: HOB VIP CREATOR (requested) ----------------
+    "hob_vip_creator": {
+        "TITLE": "💎 **HOB VIP CREATOR**",
+        "DESCRIPTION": (
+            "🏛️ Central hub for **all single creator VIP groups**.\n\n"
+            "✅ All these single groups are **available inside HOB CREATOR**:\n"
+            "• B1G BURLZ\n"
+            "• Monica Minx\n"
+            "• Mexicuban\n"
+            "• LIL.BONY1\n"
+            "• ExclusiveByAj\n"
+            "• ZTW\n\n"
+            "⚡ *Instant access to the VIP link sent directly to your email!*\n"
+            "📌 Questions? Link not working? Contact support 🔍👀"
+        ),
+        "TOKEN": "PUT-HOB-CREATOR-TOKEN-HERE",  # add the real token when ready
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£—", "crypto": "£—"},  # set your HOB Creator prices here
+        "PAYMENT_INFO": {
+            # add whichever you use; both are optional and the keyboard is dynamic
+            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_WITH_VARIANT_ID:1",
+            # "shopify_life": "https://nt9qev-td.myshopify.com/cart/REPLACE_WITH_VARIANT_ID:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+    },
 }
 
 APPS: dict[str, Application] = {}
@@ -153,22 +189,27 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     brand = context.bot_data["brand"]
     cfg = BOTS[brand]
     pay = cfg["PAYMENT_INFO"]
+    support = cfg["SUPPORT_CONTACT"]
 
     keyboard: list[list[InlineKeyboardButton]] = []
+
+    # Card buttons (Shopify)
     if "shopify_life" in pay:
         keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (ONE-TIME)", web_app=WebAppInfo(url=pay["shopify_life"]))])
     if "shopify_1m" in pay:
         keyboard.append([InlineKeyboardButton("💳 Apple/Google Pay (1 Month)", web_app=WebAppInfo(url=pay["shopify_1m"]))])
 
-    # Crypto/PayPal (shared flows)
+    # "I've paid (Card)" available if at least one card option exists
+    if "shopify_life" in pay or "shopify_1m" in pay:
+        keyboard.append([InlineKeyboardButton("✅ I’ve paid (Card)", callback_data=f"{brand}:paid:card")])
+
+    # Shared flows (PayPal / Crypto)
     keyboard.append([InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")])
     keyboard.append([InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")])
     keyboard.append([InlineKeyboardButton("💬 Support", callback_data=f"{brand}:support")])
 
     await update.effective_message.reply_text(
-        f"{cfg['TITLE']}\n\n{cfg['DESCRIPTION']}\n\n"
-        "🧾 **Card orders** (Apple Pay / Google Pay / card) are **emailed instantly** — "
-        "check the email used at checkout (and spam).",
+        f"{cfg['TITLE']}\n\n{cfg['DESCRIPTION']}\n\n{SHARED_TEXT['card_info_inline']}",
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown",
     )
@@ -177,13 +218,15 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
 
-    data = q.data.split(":")
-    brand, action = data[0], data[1]
+    parts = q.data.split(":")
+    brand, action = parts[0], parts[1]
+    method = parts[2] if len(parts) > 2 else None
+
     cfg = BOTS[brand]
     pay = cfg["PAYMENT_INFO"]
     prices = cfg.get("PRICES", {})
     support = cfg["SUPPORT_CONTACT"]
-    brand_title = cfg["TITLE"].replace("*", "")  # plain for message
+    brand_title_plain = cfg["TITLE"].replace("*", "")
 
     if action == "paypal":
         text = SHARED_TEXT["paypal"].format(
@@ -208,9 +251,12 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await q.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
     elif action == "paid":
-        method = data[2] if len(data) > 2 else "payment"
-        nice = "PayPal" if method == "paypal" else ("Crypto" if method == "crypto" else "payment")
-        text = SHARED_TEXT["paid_thanks"].format(method=nice, support=support, brand_title=brand_title)
+        if method == "card":
+            text = SHARED_TEXT["paid_card"].format(support=support, brand_title=brand_title_plain)
+        else:
+            nice = "PayPal" if method == "paypal" else ("Crypto" if method == "crypto" else "payment")
+            text = SHARED_TEXT["paid_thanks_pp_crypto"].format(method=nice, support=support, brand_title=brand_title_plain)
+
         kb = [[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]
         await q.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
@@ -223,7 +269,6 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     elif action == "back":
-        # Return to the main menu for this brand
         await start(update, context)
 
     else:
