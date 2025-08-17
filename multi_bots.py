@@ -22,8 +22,6 @@ BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
 ADMIN_CHAT_ID = 7914196017  # Admin pings go here for ALL brands
 PAID_DEBOUNCE_SECONDS = 60   # Anti-spam for "I've paid"
 
-# Savings + freshness display
-BUNDLE_SAVING_TEXT = "💡 Save £45+ vs buying separately (best value)."
 LAST_UPDATED_FMT = "%d %b %Y"  # e.g., 17 Aug 2025
 
 DISCLAIMER = (
@@ -31,21 +29,20 @@ DISCLAIMER = (
     "Want something custom on your bill? DM support and we can personalize it."
 )
 
-# ---------------- Universal text (edit once) ----------------
+# ---------------- Universal text ----------------
 SHARED_TEXT = {
     "paypal": (
         "💸 **PayPal**\n\n"
         "**Price:** {price}\n"
         "`{paypal_tag}`\n\n"
         "⚠️ Use **Friends & Family** only.\n"
-        "After paying, tap **I’ve paid** below."
+        "After paying, tap **I’ve Paid** below."
     ),
     "crypto": (
         "₿ **Crypto Payments**\n\n"
         "**Price:** {price}\n"
         "{crypto_link}\n\n"
-        "Follow the instructions inside.\n"
-        "After paying, tap **I’ve paid** below."
+        "After paying, tap **I’ve Paid** below."
     ),
     "paid_thanks_pp_crypto": (
         "✅ **Thanks for your {method} payment!**\n\n"
@@ -58,237 +55,66 @@ SHARED_TEXT = {
         "👉 Please check your inbox and spam for **{brand_title}**.\n\n"
         "If you don’t see it in 10 minutes, message {support} with your **Order #** or **checkout email**."
     ),
-    "card_info_inline": (
-        "🧾 **Card orders** (Apple Pay / Google Pay / card) are **emailed instantly** — "
-        "check the email used at checkout (and spam)."
-    ),
     "support_panel": (
-        "💬 **Need Assistance? We're Here to Help!**\n\n"
-        "🕒 **Working Hours:** 8:00 AM - 12:00 AM BST\n"
-        "📨 For support, contact us directly at:\n"
-        "👉 {support}\n\n"
-        "Please include your **Order #** or your **screenshot/transaction ID** (for PayPal/Crypto) so we can help fast."
+        "💬 **Need Assistance?**\n\n"
+        "🕒 Working Hours: 8 AM – 12 AM BST\n"
+        "📨 Contact: {support}\n\n"
+        "Include your **Order #** or **proof of payment** for fastest help."
     ),
     "faq": (
-        "❓ **Frequently Asked Questions (FAQ)**\n\n"
-
-        "• **How do I get my link?**\n"
-        "  • **Card / Apple Pay / Google Pay** → Link is emailed **instantly** to your checkout email.\n"
-        "  • **PayPal / Crypto** → Links are sent **manually** after you show proof of payment.\n\n"
-
-        "• **I don’t see the email.**\n"
-        "  • Check your **spam/junk folder**.\n"
-        "  • Make sure you entered the **correct email at checkout**.\n"
-        "  • Still nothing after 10 minutes? Contact {support}.\n\n"
-
-        "• **What proof do you need for PayPal/Crypto?**\n"
-        "  Send either:\n"
-        "  • A **screenshot** of the transaction, or\n"
-        "  • The **transaction ID/hash**\n"
-        "  ➝ Always include which **bot** you purchased so we know what to send you.\n\n"
-
-        "• **Can I upgrade to the all-in-one bundle?**\n"
-        "  ✅ Yes — tap **⬆️ Upgrade: HOB VIP CREATOR BUNDLE** below.\n"
-        "  👉 It’s our **most popular deal** and you {saving} compared to buying groups one by one.\n\n"
-
-        "• **What shows on my bank/PayPal statement?**\n"
-        "  💳 Payments are billed under an **education company** (nothing weird).\n"
-        "  Want a custom label? DM {support} before paying and we’ll personalize it.\n\n"
-
-        "• **Do payments renew automatically?**\n"
-        "  • If you picked **monthly/3-month/6-month plans** → they renew automatically unless you cancel.\n"
-        "  • One-time/lifetime payments are **permanent** (no renewal).\n\n"
-
-        "• **Can I cancel my subscription?**\n"
-        "  Yes — you can cancel anytime from your payment provider (Shopify, PayPal, or Crypto wallet).\n"
-        "  Access stays until the end of your billing period.\n\n"
-
-        "• **I pressed 'I’ve Paid' but nothing happened.**\n"
-        "  That button just logs your request — you still need to message {support} with proof if you paid via PayPal or Crypto.\n\n"
-
-        "• **How long until I get access after PayPal/Crypto?**\n"
-        "  Usually within **5–15 minutes** if proof is sent, but it can take longer if outside UK hours. Be patient — you’ll always get what you paid for.\n\n"
-
-        "• **Why should I choose the bundle?**\n"
-        "  • It’s the **cheapest way** to access everything.\n"
-        "  • **Most popular choice** (majority of members buy the bundle).\n"
-        "  • You {saving} instantly vs buying groups separately.\n\n"
-
-        "• **When was this bot last updated?**\n"
-        "  📅 This bot was **last updated:** {last_updated}\n\n"
-
-        "• **What if I need help?**\n"
-        "  Contact {support} any time — we’re here to sort out payments, links, or upgrades fast."
+        "❓ **FAQ**\n\n"
+        "**Getting Your Link**\n"
+        "• Card / Apple Pay / Google Pay → Sent instantly to your checkout email.\n"
+        "• PayPal / Crypto → Sent manually after proof of payment.\n\n"
+        "**Didn’t Get Email?**\n"
+        "• Check spam/junk folder.\n"
+        "• Make sure your checkout email was correct.\n"
+        "• Still missing? Contact {support}.\n\n"
+        "**Proof Needed (PayPal/Crypto)**\n"
+        "• Screenshot or transaction ID/hash.\n"
+        "• Include the **bot name** you purchased.\n\n"
+        "**Upgrades**\n"
+        "• ✅ Tap ⬆️ Upgrade: HOB VIP CREATOR below (best value).\n\n"
+        "**Billing Name**\n"
+        "• Shows as an **education company** (nothing weird).\n"
+        "• Want a custom label? DM {support} before paying.\n\n"
+        "**Renewals**\n"
+        "• 1 / 3 / 6-month plans renew automatically.\n"
+        "• Lifetime = permanent (no renewal).\n\n"
+        "**Cancelling**\n"
+        "• Cancel anytime via your provider (Shopify / PayPal / wallet).\n"
+        "• Access stays until your period ends.\n\n"
+        "**PayPal / Crypto Timing**\n"
+        "• Typically **5–15 min** after proof is sent.\n"
+        "• Can be longer outside UK hours.\n\n"
+        "**Need Help?**\n"
+        "• Message {support} — we’ll sort payments, links, upgrades fast."
     ),
 }
 
-# Helper snippet shown on the START screen for specific lifetime bots
+# ---------- Helpers: descriptions & labels ----------
 def lifetime_desc_lines(display_name: str) -> str:
     return (
-        f"🎥 Lifetime access to **all {display_name}’s tapes & pics** 👑\n"
-        "📈 Updated frequently with brand new drops **whenever they post tapes**\n\n"
+        f"🎥 Lifetime access to all **{display_name}’s tapes & pics** 👑\n"
+        "📈 Updated frequently with brand new drops whenever they post tapes\n\n"
         "🔒 Worried about what will show up on your card? → **Check the FAQ**"
     )
 
-# ---------------- Bots config (EDIT THIS SECTION) ----------------
-BOTS = {
-    "b1g_butlx": {
-        "TITLE": "💎 **B1G BURLZ VIP**",
-        "DESCRIPTION": lifetime_desc_lines("B1G BURLZ") + f"\n\n{DISCLAIMER}",
-        "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£6", "crypto": "£6"},
-        "PAYMENT_INFO": {
-            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101524603254:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-        "PLANS": {
-            "lifetime": {"label": "Lifetime (£6)", "display": "LIFETIME", "price_gbp": "£6.00"},
-        },
-    },
-    "monica_minx": {
-        "TITLE": "💎 **Monica Minx VIP**",
-        "DESCRIPTION": lifetime_desc_lines("Monica Minx") + f"\n\n{DISCLAIMER}",
-        "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£6", "crypto": "£6"},
-        "PAYMENT_INFO": {
-            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101529452918:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-        "PLANS": {
-            "lifetime": {"label": "Lifetime (£6)", "display": "LIFETIME", "price_gbp": "£6.00"},
-        },
-    },
-    "mexicuban": {
-        "TITLE": "💎 **Mexicuban VIP**",
-        "DESCRIPTION": lifetime_desc_lines("Mexicuban") + f"\n\n{DISCLAIMER}",
-        "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£15", "crypto": "£15"},
-        "PAYMENT_INFO": {
-            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101534138742:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-        "PLANS": {
-            "lifetime": {"label": "Lifetime (£15)", "display": "LIFETIME", "price_gbp": "£15.00"},
-        },
-    },
+def start_page_body(title: str, description_block: str) -> str:
+    # Start page should be short + end with dynamic Last Updated (no extra lines)
+    return (
+        f"{title}\n\n"
+        f"{description_block}\n\n"
+        f"📅 Last Updated: {datetime.now().strftime(LAST_UPDATED_FMT)}"
+    )
 
-    # ZTW — 1/3/6 month plans (with savings vs retail)
-    "zaystheway_vip": {
-        "TITLE": "💎 **ZTW VIP**",
-        "DESCRIPTION": (
-            "💎 *All up to date content - OF, Patreon, Fansly - from ZTW!*\n"
-            "⚡ Instant access sent to your email after checkout.\n\n"
-            f"{DISCLAIMER}"
-        ),
-        "TOKEN": "7718373318:-qdrQru770jXaX58HM",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£15", "crypto": "£15"},
-        "PLANS": {
-            "1_month": {"label": "1 Month (£15)", "display": "1 MONTH", "price_gbp": "£15.00"},
-            "3_month": {"label": "3 Months (£31) 🔥 Most Popular", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
-            "6_month": {"label": "6 Months (£58.50)", "display": "6 MONTHS", "price_gbp": "£58.50"},
-        },
-        "RETAIL_USD": {"1_month": 40.0, "3_month": 84.0, "6_month": 156.0},
-        "PAYMENT_INFO": {
-            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_ZTW_1M:1",
-            "shopify_3m": "https://nt9qev-td.myshopify.com/cart/REPLACE_ZTW_3M:1",
-            "shopify_6m": "https://nt9qev-td.myshopify.com/cart/REPLACE_ZTW_6M:1",
-            "crypto": "https://t.me/+318ocdUDrbA4ODk0",
-            "paypal": "@Aieducation ON PAYPAL F&F only we cant process order if it isnt F&F",
-        },
-    },
-
-    "exclusivebyaj": {
-        "TITLE": "💎 **ExclusiveByAj VIP**",
-        "DESCRIPTION": (
-            "💎 Exclusive drops curated by AJ — **Early Access**.\n"
-            "⚡ Instant link emailed after checkout.\n\n"
-            f"{DISCLAIMER}"
-        ),
-        "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£8", "crypto": "£8"},
-        "PAYMENT_INFO": {
-            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/56080557048182:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-        "PLANS": {
-            "1_month": {"label": "Early Access – 1 Month (£8)", "display": "1 MONTH", "price_gbp": "£8.00"},
-        },
-    },
-    "lil_bony1": {
-        "TITLE": "💎 **LIL.BONY1 VIP**",
-        "DESCRIPTION": lifetime_desc_lines("LilBony1") + f"\n\n{DISCLAIMER}",
-        "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£20", "crypto": "£20"},
-        "PAYMENT_INFO": {
-            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101539152246:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-        "PLANS": {
-            "lifetime": {"label": "Lifetime (£20)", "display": "LIFETIME", "price_gbp": "£20.00"},
-        },
-    },
-
-    # ---------------- HOB VIP CREATOR (BUNDLE 1/3/6) ----------------
-    "hob_vip_creator": {
-        "TITLE": "💎 **HOB VIP CREATOR BUNDLE**",
-        "DESCRIPTION": (
-            "🏛️ Central hub for **all single creator VIP groups**.\n"
-            "✅ Includes: B1G BURLZ, Monica Minx, Mexicuban, LIL.BONY1, ExclusiveByAj, ZTW.\n"
-            "💸 Buying separately would cost £80+ — bundle is the **best value**.\n\n"
-            f"{DISCLAIMER}"
-        ),
-        "TOKEN": "8332913011:AAEz8LpOgG_FGEmP_7eqrLh23E7_MUNvuvE",
-        "SUPPORT_CONTACT": "@Sebvip",
-        "PRICES": {"paypal": "£25", "crypto": "£25"},  # fallback
-        "PLANS": {
-            "1_month": {"label": "1 Month (£15)", "display": "1 MONTH", "price_gbp": "£15.00"},
-            "3_month": {"label": "3 Months (£31) 🔥 Most Popular", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
-            "6_month": {"label": "6 Months (£58.50)", "display": "6 MONTHS", "price_gbp": "£58.50"},
-        },
-        "RETAIL_USD": {"1_month": 40.0, "3_month": 84.0, "6_month": 156.0},
-        "PAYMENT_INFO": {
-            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_1M:1",
-            "shopify_3m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_3M:1",
-            "shopify_6m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_6M:1",
-            "crypto": "https://t.me/+yourCryptoRoom",
-            "paypal": "@YourPayPalTag (F&F only)",
-        },
-    },
-}
-
-APPS: dict[str, Application] = {}
-STARTUP_RESULTS: dict[str, str] = {}  # brand -> "ok" or error message
-
-# ---------------- Helpers ----------------
 def parse_price_number(gbp_str: str) -> float:
     m = re.findall(r"[0-9]+(?:\.[0-9]+)?", (gbp_str or "").replace(",", ""))
     return float(m[0]) if m else 0.0
 
-def pct_saving(our_price: float, retail_price: float) -> str:
-    if retail_price and retail_price > 0:
-        return f"Save {round((1 - our_price / retail_price) * 100)}%"
-    return ""
-
 def plan_label(cfg: dict, key: str, fallback: str) -> str:
-    lbl = cfg.get("PLANS", {}).get(key, {}).get("label", fallback)
-    price_gbp = cfg.get("PLANS", {}).get(key, {}).get("price_gbp")
-    retail = cfg.get("RETAIL_USD", {}).get(key)
-    suffix = ""
-    if price_gbp and retail:
-        our = parse_price_number(price_gbp)
-        suffix = f" • {pct_saving(our, float(retail))} vs ${int(retail)}"
-    return f"{lbl}{suffix}"
+    # Use provided label; keep it simple (no savings math here by request)
+    return cfg.get("PLANS", {}).get(key, {}).get("label", fallback)
 
 def get_plan_price_text(cfg: dict, plan_key: str | None, fallback_price: str) -> str:
     if not plan_key:
@@ -307,7 +133,7 @@ def card_button_label(brand: str) -> str:
     return "💳 Apple/Google Pay – Instant Access"
 
 def upsell_button_row() -> list[InlineKeyboardButton]:
-    # Static Linktree upsell as requested
+    # Static Linktree as requested
     return [InlineKeyboardButton("🔥 Upgrade: HOB VIP CREATOR", url="https://linktr.ee/HOBCREATORS")]
 
 async def admin_ping(context: ContextTypes.DEFAULT_TYPE, text: str):
@@ -320,7 +146,139 @@ def fmt_user(update_or_query) -> tuple[str, int]:
     u = update_or_query.from_user
     return (u.username or "NoUsername", u.id)
 
-# ---------------- Generic handlers (all non-ZTW brands) ----------------
+# ---------------- Bots config (ALL) ----------------
+BOTS = {
+    # ---- Lifetime bots ----
+    "b1g_butlx": {
+        "TITLE": "💎 B1G BURLZ VIP",
+        "DESCRIPTION": start_page_body("💎 B1G BURLZ VIP", lifetime_desc_lines("B1G BURLZ")),
+        "TOKEN": "8219976154:AAEHiQ92eZM0T62auqP45X-yscJsUpQUsq8",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£6", "crypto": "£6"},
+        "PAYMENT_INFO": {
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101524603254:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+        "PLANS": {"lifetime": {"label": "Lifetime (£6)", "display": "LIFETIME", "price_gbp": "£6.00"}},
+    },
+    "monica_minx": {
+        "TITLE": "💎 Monica Minx VIP",
+        "DESCRIPTION": start_page_body("💎 Monica Minx VIP", lifetime_desc_lines("Monica Minx")),
+        "TOKEN": "8490676478:AAH49OOhbEltLHVRN2Ic1Eyg-JDSPAIuj-k",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£6", "crypto": "£6"},
+        "PAYMENT_INFO": {
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101529452918:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+        "PLANS": {"lifetime": {"label": "Lifetime (£6)", "display": "LIFETIME", "price_gbp": "£6.00"}},
+    },
+    "mexicuban": {
+        "TITLE": "💎 Mexicuban VIP",
+        "DESCRIPTION": start_page_body("💎 Mexicuban VIP", lifetime_desc_lines("Mexicuban")),
+        "TOKEN": "8406486106:AAHZHqPW-AyBIuFD9iDQzzbyiGXTZB7hrrw",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£15", "crypto": "£15"},
+        "PAYMENT_INFO": {
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101534138742:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+        "PLANS": {"lifetime": {"label": "Lifetime (£15)", "display": "LIFETIME", "price_gbp": "£15.00"}},
+    },
+    "lil_bony1": {
+        "TITLE": "💎 LIL.BONY1 VIP",
+        "DESCRIPTION": start_page_body("💎 LIL.BONY1 VIP", lifetime_desc_lines("LilBony1")),
+        "TOKEN": "8269169417:AAGhMfMONQFy7bqdckeugMti4VDqPMcg0w8",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£20", "crypto": "£20"},
+        "PAYMENT_INFO": {
+            "shopify_life": "https://nt9qev-td.myshopify.com/cart/56101539152246:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+        "PLANS": {"lifetime": {"label": "Lifetime (£20)", "display": "LIFETIME", "price_gbp": "£20.00"}},
+    },
+
+    # ---- Monthly-style bots ----
+    "exclusivebyaj": {
+        "TITLE": "💎 ExclusiveByAj VIP",
+        "DESCRIPTION": start_page_body(
+            "💎 ExclusiveByAj VIP",
+            "💎 Exclusive drops curated by AJ — **Early Access**\n"
+            "📈 Updated frequently with brand new drops\n\n"
+            "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+        ),
+        "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£8", "crypto": "£8"},
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/56080557048182:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+        "PLANS": {"1_month": {"label": "Early Access – 1 Month (£8)", "display": "1 MONTH", "price_gbp": "£8.00"}},
+    },
+
+    # ---- ZTW (1/3/6) ----
+    "zaystheway_vip": {
+        "TITLE": "💎 ZTW VIP",
+        "DESCRIPTION": start_page_body(
+            "💎 ZTW VIP",
+            "💎 All up to date content — OF, Patreon, Fansly\n"
+            "⚡ Instant access sent to your email after checkout\n\n"
+            "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+        ),
+        "TOKEN": "7718373318:-qdrQru770jXaX58HM",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£15", "crypto": "£15"},
+        "PLANS": {
+            "1_month": {"label": "1 Month (£15)", "display": "1 MONTH", "price_gbp": "£15.00"},
+            "3_month": {"label": "3 Months (£31) 🔥 Most Popular", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
+            "6_month": {"label": "6 Months (£58.50)", "display": "6 MONTHS", "price_gbp": "£58.50"},
+        },
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_ZTW_1M:1",
+            "shopify_3m": "https://nt9qev-td.myshopify.com/cart/REPLACE_ZTW_3M:1",
+            "shopify_6m": "https://nt9qev-td.myshopify.com/cart/REPLACE_ZTW_6M:1",
+            "crypto": "https://t.me/+318ocdUDrbA4ODk0",
+            "paypal": "@Aieducation ON PAYPAL F&F only we cant process order if it isnt F&F",
+        },
+    },
+
+    # ---- HOB VIP CREATOR (1/3/6) ----
+    "hob_vip_creator": {
+        "TITLE": "💎 HOB VIP CREATOR BUNDLE",
+        "DESCRIPTION": start_page_body(
+            "💎 HOB VIP CREATOR BUNDLE",
+            "🏛️ Central hub for **all single creator VIP groups**\n"
+            "✅ Includes: B1G BURLZ, Monica Minx, Mexicuban, LIL.BONY1, ExclusiveByAj, ZTW\n\n"
+            "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+        ),
+        "TOKEN": "8332913011:AAEz8LpOgG_FGEmP_7eqrLh23E7_MUNvuvE",
+        "SUPPORT_CONTACT": "@Sebvip",
+        "PRICES": {"paypal": "£25", "crypto": "£25"},  # fallback for PayPal/Crypto text
+        "PLANS": {
+            "1_month": {"label": "1 Month (£15)", "display": "1 MONTH", "price_gbp": "£15.00"},
+            "3_month": {"label": "3 Months (£31) 🔥 Most Popular", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
+            "6_month": {"label": "6 Months (£58.50)", "display": "6 MONTHS", "price_gbp": "£58.50"},
+        },
+        "PAYMENT_INFO": {
+            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_1M:1",
+            "shopify_3m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_3M:1",
+            "shopify_6m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_6M:1",
+            "crypto": "https://t.me/+yourCryptoRoom",
+            "paypal": "@YourPayPalTag (F&F only)",
+        },
+    },
+}
+
+APPS: dict[str, Application] = {}
+STARTUP_RESULTS: dict[str, str] = {}  # brand -> "ok" or error message
+
+# ---------------- /start handler (generic except ZTW) ----------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     brand = context.bot_data["brand"]
     if brand == "zaystheway_vip":
@@ -330,7 +288,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pay = cfg["PAYMENT_INFO"]
     keyboard: list[list[InlineKeyboardButton]] = []
 
-    # --- START SCREEN: plan buttons if any exist ---
+    # Show plan buttons if available
     if "PLANS" in cfg and has_any_plan(pay):
         if "shopify_1m" in pay and "1_month" in cfg["PLANS"]:
             keyboard.append([InlineKeyboardButton(plan_label(cfg, "1_month", "1 Month"), callback_data=f"{brand}:plan:1_month")])
@@ -341,34 +299,31 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if "shopify_life" in pay and "lifetime" in cfg["PLANS"]:
             keyboard.append([InlineKeyboardButton(plan_label(cfg, "lifetime", "Lifetime"), callback_data=f"{brand}:plan:lifetime")])
     else:
-        # No plan buttons available; show direct methods instead
+        # No plan buttons: offer direct method selection
         keyboard.append([InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")])
         keyboard.append([InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")])
 
-    # Global actions
+    # FAQ + Support
     keyboard.append([InlineKeyboardButton("❓ FAQ", callback_data=f"{brand}:faq")])
     keyboard.append([InlineKeyboardButton("💬 Support", callback_data=f"{brand}:support")])
 
-    # Upsell (everywhere)
+    # Upsell
     keyboard.append(upsell_button_row())
 
-    last_updated = datetime.now().strftime(LAST_UPDATED_FMT)
+    # Start page message (prebuilt in DESCRIPTION)
     await update.effective_message.reply_text(
-        f"{cfg['TITLE']}\n\n"
-        f"{cfg['DESCRIPTION']}\n\n"
-        f"📅 Last Updated: {last_updated}\n"
-        f"{SHARED_TEXT['card_info_inline']}\n"
-        f"{BUNDLE_SAVING_TEXT}",
+        cfg["DESCRIPTION"],
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown",
     )
 
+# ---------------- Callback router (generic except ZTW) ----------------
 async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     q = update.callback_query
     await q.answer()
     data = q.data
 
-    # ZTW uses its own callback formats (keep compatibility)
+    # ZTW-specific routes
     if data.startswith(("select_", "payment_", "paid", "back", "support", "faq", "copy_")):
         return await ztw_router(q, context)
 
@@ -381,7 +336,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     brand_title_plain = cfg["TITLE"].replace("*", "")
     username, user_id = fmt_user(q)
 
-    # ---- PLAN PRESSED (2nd screen) ----
+    # ---- PLAN SCREEN (2nd screen after tap) ----
     if action == "plan":
         plan_key = parts[2] if len(parts) > 2 else None
         context.user_data["plan_key"] = plan_key
@@ -390,30 +345,32 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         context.user_data["plan_text"] = plan_display or "PLAN"
 
-        explain = (
-            f"⭐️ You have chosen the **{context.user_data['plan_text']}** plan.\n\n"
-            "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
-            "⚡️ **Crypto:** (30 - 60 min wait time), VIP link sent **manually**.\n"
-            "📧 **PayPal:** (30 - 60 min wait time), VIP link sent **manually**.\n\n"
+        # The specific copy you asked for on this screen:
+        plan_text_msg = "1 MONTH plan" if plan_key and plan_key.startswith("1_") else (plan_display or "PLAN").title()
+        prepay_msg = (
+            f"⭐️ You have chosen the **{plan_display}**.\n\n"
+            "💳 **Apple Pay / Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
+            "⚡️ **Crypto:** 30–60 min wait, VIP link sent manually.\n"
+            "📧 **PayPal:** 30–60 min wait, VIP link sent manually.\n\n"
             "🎉 Choose your preferred payment method below and get access today!"
         )
 
         kb = [
             [InlineKeyboardButton(card_button_label(brand), callback_data=f"{brand}:method:card")],
-            [InlineKeyboardButton("⚡ Crypto ⏳ (30 - 60 min wait)", callback_data=f"{brand}:method:crypto")],
-            [InlineKeyboardButton("📧 PayPal 💌 (30 - 60 min wait)", callback_data=f"{brand}:method:paypal")],
-            [InlineKeyboardButton("🔙 Go Back", callback_data=f"{brand}:back")],
+            [InlineKeyboardButton("⚡ Crypto (instructions)", callback_data=f"{brand}:method:crypto")],
+            [InlineKeyboardButton("📧 PayPal (read note)", callback_data=f"{brand}:method:paypal")],
+            [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")],
         ]
         kb.append(upsell_button_row())
 
         await admin_ping(context, (
             "✅ **Plan Selected**\n"
             f"🏷️ **Brand:** {brand_title_plain}\n"
-            f"📋 **Plan:** {context.user_data['plan_text']}\n"
+            f"📋 **Plan:** {plan_display}\n"
             f"👤 **User:** @{username} (`{user_id}`)\n"
             f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
         ))
-        return await q.edit_message_text(explain, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
+        return await q.edit_message_text(prepay_msg, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
     # ---- METHOD CHOSEN ----
     if action == "method":
@@ -436,7 +393,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text = SHARED_TEXT["paypal"].format(price=price, paypal_tag=pay["paypal"])
             kb = [
                 [InlineKeyboardButton("📋 Copy PayPal Tag", callback_data=f"{brand}:copy:paypal")],
-                [InlineKeyboardButton("✅ I’ve paid (PayPal)", callback_data=f"{brand}:paid:paypal")],
+                [InlineKeyboardButton("✅ I’ve Paid (PayPal)", callback_data=f"{brand}:paid:paypal")],
                 [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:plan:{plan_key}")],
             ]
             kb.append(upsell_button_row())
@@ -448,7 +405,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text = SHARED_TEXT["crypto"].format(price=price, crypto_link=crypto_link)
             kb = [
                 [InlineKeyboardButton("📋 Copy Crypto Link", callback_data=f"{brand}:copy:crypto")],
-                [InlineKeyboardButton("✅ I’ve paid (Crypto)", callback_data=f"{brand}:paid:crypto")],
+                [InlineKeyboardButton("✅ I’ve Paid (Crypto)", callback_data=f"{brand}:paid:crypto")],
                 [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:plan:{plan_key}")],
             ]
             kb.append(upsell_button_row())
@@ -467,11 +424,11 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await q.answer("This plan isn’t available by card right now.", show_alert=True)
 
-            kb.append([InlineKeyboardButton("✅ I’ve paid (Card)", callback_data=f"{brand}:paid:card")])
+            kb.append([InlineKeyboardButton("✅ I’ve Paid (Card)", callback_data=f"{brand}:paid:card")])
             kb.append([InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:plan:{plan_key}")])
             kb.append(upsell_button_row())
             return await q.edit_message_text(
-                text="🚀 **Pay by card** — instant access emailed after checkout.\n\n" + SHARED_TEXT["card_info_inline"],
+                text="🚀 **Pay by card** — instant access is emailed immediately after checkout (check spam).",
                 reply_markup=InlineKeyboardMarkup(kb),
                 parse_mode="Markdown"
             )
@@ -501,12 +458,12 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ))
         return
 
-    # ---- DIRECT METHOD FLOW (fallback when no plan buttons exist) ----
+    # ---- DIRECT METHOD FLOW (fallback when no plan buttons) ----
     if action == "paypal":
         text = SHARED_TEXT["paypal"].format(price=prices.get("paypal", "£—"), paypal_tag=pay["paypal"])
         kb = [
             [InlineKeyboardButton("📋 Copy PayPal Tag", callback_data=f"{brand}:copy:paypal")],
-            [InlineKeyboardButton("✅ I’ve paid (PayPal)", callback_data=f"{brand}:paid:paypal")],
+            [InlineKeyboardButton("✅ I’ve Paid (PayPal)", callback_data=f"{brand}:paid:paypal")],
             [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")],
         ]
         kb.append(upsell_button_row())
@@ -523,7 +480,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = SHARED_TEXT["crypto"].format(price=prices.get("crypto", "£—"), crypto_link=pay["crypto"])
         kb = [
             [InlineKeyboardButton("📋 Copy Crypto Link", callback_data=f"{brand}:copy:crypto")],
-            [InlineKeyboardButton("✅ I’ve paid (Crypto)", callback_data=f"{brand}:paid:crypto")],
+            [InlineKeyboardButton("✅ I’ve Paid (Crypto)", callback_data=f"{brand}:paid:crypto")],
             [InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")],
         ]
         kb.append(upsell_button_row())
@@ -570,13 +527,8 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if action == "faq":
         kb = [[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]
         kb.append(upsell_button_row())
-        last_updated = datetime.now().strftime(LAST_UPDATED_FMT)
         return await q.edit_message_text(
-            text=SHARED_TEXT["faq"].format(
-                support=support,
-                saving=BUNDLE_SAVING_TEXT,
-                last_updated=last_updated
-            ),
+            text=SHARED_TEXT["faq"].format(support=support),
             reply_markup=InlineKeyboardMarkup(kb),
             parse_mode="Markdown",
         )
@@ -596,7 +548,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # fallback
     return await start(update, context)
 
-# ---------------- ZTW-specific handlers (now 1/3/6 month) ----------------
+# ---------------- ZTW-specific handlers (1/3/6) ----------------
 def ztw_make_plan_label(plan_key: str) -> str:
     cfg = BOTS["zaystheway_vip"]
     return plan_label(cfg, plan_key, cfg["PLANS"][plan_key]["label"])
@@ -612,15 +564,8 @@ async def ztw_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     keyboard.append(upsell_button_row())
 
-    last_updated = datetime.now().strftime(LAST_UPDATED_FMT)
-    msg = update.effective_message
-    await msg.reply_text(
-        "💎 **Welcome to ZTW VIP Bot!**\n\n"
-        "💎 *All up to date content - OF, Patreon, Fansly - from ZTW!*\n"
-        "⚡ *Instant access to the VIP link sent directly to your email!*\n"
-        f"📅 Last Updated: {last_updated}\n"
-        f"{BUNDLE_SAVING_TEXT}\n\n"
-        f"{DISCLAIMER}",
+    await update.effective_message.reply_text(
+        cfg["DESCRIPTION"],
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown",
     )
@@ -642,18 +587,20 @@ async def ztw_handle_subscription(update: Update, context: ContextTypes.DEFAULT_
         f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
     ))
 
+    # Same “how to pay” bullets you wanted
     message = (
-        f"⭐️ You have chosen the **{plan_text}** plan.\n\n"
-        "💳 **Apple Pay/Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
-        "⚡️ **Crypto:** (30 - 60 min wait time), VIP link sent **manually**.\n"
-        "📧 **PayPal:** (30 - 60 min wait time), VIP link sent **manually**.\n\n"
+        f"⭐️ You have chosen the **{plan_text}**.\n\n"
+        "💳 **Apple Pay / Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
+        "⚡️ **Crypto:** 30–60 min wait, VIP link sent manually.\n"
+        "📧 **PayPal:** 30–60 min wait, VIP link sent manually.\n\n"
         "🎉 Choose your preferred payment method below and get access today!"
     )
+
     keyboard = [
-        [InlineKeyboardButton("💳 Apple Pay/Google Pay – Instant Access", callback_data=f"payment_shopify_{plan_key}")],
-        [InlineKeyboardButton("⚡ Crypto ⏳ (30 - 60 min wait)", callback_data=f"payment_crypto_{plan_key}")],
-        [InlineKeyboardButton("📧 PayPal 💌 (30 - 60 min wait)", callback_data=f"payment_paypal_{plan_key}")],
-        [InlineKeyboardButton("🔙 Go Back", callback_data="back")],
+        [InlineKeyboardButton("💳 Apple/Google Pay – Instant Access", callback_data=f"payment_shopify_{plan_key}")],
+        [InlineKeyboardButton("⚡ Crypto (instructions)", callback_data=f"payment_crypto_{plan_key}")],
+        [InlineKeyboardButton("📧 PayPal (read note)", callback_data=f"payment_paypal_{plan_key}")],
+        [InlineKeyboardButton("🔙 Back", callback_data="back")],
     ]
     keyboard.append(upsell_button_row())
 
@@ -691,26 +638,26 @@ async def ztw_handle_payment(update: Update, context: ContextTypes.DEFAULT_TYPE)
         message = (
             "🚀 **Instant Access with Apple Pay/Google Pay!**\n\n"
             f"🎁 **Plan:** {context.user_data['plan_text']}: **{price}** 🌟\n\n"
-            "🛒 Click below to pay securely and get **INSTANT VIP access** delivered to your email! 📧\n\n"
-            "✅ After payment, click 'I've Paid' to confirm."
+            "🛒 Tap below to pay securely and get **INSTANT VIP access** delivered to your email (check spam).\n\n"
+            "✅ After payment, click **I’ve Paid**."
         )
         keyboard = [
             [InlineKeyboardButton(f"⏳ {context.user_data['plan_text']} ({price})", web_app=WebAppInfo(url=info[url_key]))],
-            [InlineKeyboardButton("✅ I've Paid", callback_data="paid")],
-            [InlineKeyboardButton("🔙 Go Back", callback_data="back")]
+            [InlineKeyboardButton("✅ I’ve Paid", callback_data="paid")],
+            [InlineKeyboardButton("🔙 Back", callback_data="back")]
         ]
     elif method == "crypto":
         message = (
             "⚡ **Pay Securely with Crypto!**\n\n"
             f"{info['crypto']}\n\n"
             "💎 **Plan:**\n"
-            f"⏳ {context.user_data['plan_text']}: **{price} GBP** 🌟\n\n"
-            "✅ Once you've sent the payment, click 'I've Paid' to confirm."
+            f"⏳ {context.user_data['plan_text']}: **{price}** 🌟\n\n"
+            "✅ Once you've sent the payment, click **I’ve Paid** to confirm."
         )
         keyboard = [
             [InlineKeyboardButton("📋 Copy Crypto Link", callback_data="copy_crypto")],
-            [InlineKeyboardButton("✅ I've Paid", callback_data="paid")],
-            [InlineKeyboardButton("🔙 Go Back", callback_data="back")]
+            [InlineKeyboardButton("✅ I’ve Paid", callback_data="paid")],
+            [InlineKeyboardButton("🔙 Back", callback_data="back")]
         ]
     elif method == "paypal":
         message = (
@@ -718,12 +665,12 @@ async def ztw_handle_payment(update: Update, context: ContextTypes.DEFAULT_TYPE)
             f"`{info['paypal']}`\n\n"
             "💎 **Plan:**\n"
             f"⏳ {context.user_data['plan_text']}: **{price}** 🌟\n\n"
-            "✅ Once payment is complete, click 'I've Paid' to confirm."
+            "✅ Once payment is complete, click **I’ve Paid** to confirm."
         )
         keyboard = [
             [InlineKeyboardButton("📋 Copy PayPal Tag", callback_data="copy_paypal")],
-            [InlineKeyboardButton("✅ I've Paid", callback_data="paid")],
-            [InlineKeyboardButton("🔙 Go Back", callback_data="back")]
+            [InlineKeyboardButton("✅ I’ve Paid", callback_data="paid")],
+            [InlineKeyboardButton("🔙 Back", callback_data="back")]
         ]
     keyboard.append(upsell_button_row())
 
@@ -759,16 +706,14 @@ async def ztw_confirm_payment(update: Update, context: ContextTypes.DEFAULT_TYPE
     ))
 
     support = BOTS["zaystheway_vip"]["SUPPORT_CONTACT"]
-    kb = [[InlineKeyboardButton("🔙 Go Back", callback_data="back")]]
+    kb = [[InlineKeyboardButton("🔙 Back", callback_data="back")]]
     kb.append(upsell_button_row())
     await query.edit_message_text(
         text=(
-            "✅ **Payment Received! Thank You!** 🎉\n\n"
-            "📸 Please send a **screenshot** or **transaction ID** to our support team for verification.\n"
-            f"👉 {support}\n\n"
-            "⚡ **Important:**\n"
-            "• If you paid via **Apple Pay/Google Pay**, check your email inbox for the VIP link.\n"
-            "• If you paid via **PayPal or Crypto**, your VIP link will be sent manually."
+            "✅ **Payment Received — Thank You!**\n\n"
+            "• **Card**: Check your inbox/spam — link was emailed instantly.\n"
+            "• **PayPal / Crypto**: Send a **screenshot** or **transaction ID** to support so we can verify.\n"
+            f"👉 {support}"
         ),
         reply_markup=InlineKeyboardMarkup(kb),
         parse_mode="Markdown"
@@ -778,7 +723,7 @@ async def ztw_handle_support(update: Update, context: ContextTypes.DEFAULT_TYPE)
     query = update.callback_query
     await query.answer()
     support = BOTS["zaystheway_vip"]["SUPPORT_CONTACT"]
-    kb = [[InlineKeyboardButton("🔙 Go Back", callback_data="back")]]
+    kb = [[InlineKeyboardButton("🔙 Back", callback_data="back")]]
     kb.append(upsell_button_row())
     await query.edit_message_text(
         text=SHARED_TEXT["support_panel"].format(support=support),
@@ -790,15 +735,10 @@ async def ztw_handle_faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     support = BOTS["zaystheway_vip"]["SUPPORT_CONTACT"]
-    kb = [[InlineKeyboardButton("🔙 Go Back", callback_data="back")]]
+    kb = [[InlineKeyboardButton("🔙 Back", callback_data="back")]]
     kb.append(upsell_button_row())
-    last_updated = datetime.now().strftime(LAST_UPDATED_FMT)
     await query.edit_message_text(
-        text=SHARED_TEXT["faq"].format(
-            support=support,
-            saving=BUNDLE_SAVING_TEXT,
-            last_updated=last_updated
-        ),
+        text=SHARED_TEXT["faq"].format(support=support),
         reply_markup=InlineKeyboardMarkup(kb),
         parse_mode="Markdown"
     )
@@ -882,10 +822,9 @@ async def on_startup():
                 STARTUP_RESULTS[brand] = "skipped:no_token"
                 continue
 
-            # Build app per brand
             app_obj = Application.builder().token(token).updater(None).build()
 
-            # Handlers per brand
+            # Handlers
             if brand == "zaystheway_vip":
                 app_obj.add_handler(CommandHandler("start", ztw_start))
                 app_obj.add_handler(CallbackQueryHandler(ztw_handle_subscription, pattern="select_.*"))
@@ -895,7 +834,7 @@ async def on_startup():
                 app_obj.add_handler(CallbackQueryHandler(ztw_handle_support, pattern="support"))
                 app_obj.add_handler(CallbackQueryHandler(ztw_handle_faq, pattern="faq"))
                 app_obj.add_handler(CallbackQueryHandler(ztw_copy_buttons, pattern="copy_.*"))
-                # Optional uptime ping (non-fatal if it fails)
+                # Optional uptime ping (non-fatal)
                 try:
                     async with httpx.AsyncClient(timeout=10) as client:
                         await client.get(f"{BASE_URL}/uptime")
@@ -914,9 +853,9 @@ async def on_startup():
             except Exception as init_err:
                 STARTUP_RESULTS[brand] = f"init_error:{init_err}"
                 log.error(f"[{brand}] Initialize failed: {init_err}")
-                continue  # move on to next brand
+                continue
 
-            # Webhook setup (delete + set)
+            # Webhook setup
             try:
                 await app_obj.bot.delete_webhook(drop_pending_updates=True)
                 await app_obj.bot.set_webhook(
@@ -927,21 +866,17 @@ async def on_startup():
             except Exception as wh_err:
                 STARTUP_RESULTS[brand] = f"webhook_error:{wh_err}"
                 log.error(f"[{brand}] Failed to set webhook: {wh_err}")
-                # still keep the app in APPS so brand can be retried later
                 APPS[brand] = app_obj
                 continue
 
-            # Success
             APPS[brand] = app_obj
             STARTUP_RESULTS[brand] = "ok"
             log.info(f"[{brand}] Bot initialized.")
 
         except Exception as e:
-            # Catch-all so one bot never kills the loop
             STARTUP_RESULTS[brand] = f"fatal_error:{e}"
             log.exception(f"[{brand}] Fatal error during startup (skipping): {e}")
 
-    # Summary
     ok = [b for b, s in STARTUP_RESULTS.items() if s == "ok"]
     bad = {b: s for b, s in STARTUP_RESULTS.items() if s != "ok"}
     log.info(f"Startup summary -> OK: {ok} | Issues: {bad}")
@@ -951,7 +886,6 @@ async def on_startup():
 async def webhook(brand: str, request: Request):
     app_obj = APPS.get(brand)
     if not app_obj:
-        # Brand not initialized — return 404 so Telegram stops retrying this URL
         return JSONResponse({"error": f"unknown or inactive brand '{brand}'"}, status_code=404)
 
     try:
@@ -965,9 +899,8 @@ async def webhook(brand: str, request: Request):
         await app_obj.process_update(update)
         return JSONResponse({"ok": True})
     except Exception as e:
-        # Swallow per-update errors so the server stays up
         log.exception(f"[{brand}] Error processing update: {e}")
-        # Return 200 so Telegram doesn't hammer retries forever
+        # Return 200 so Telegram doesn't infinitely retry
         return JSONResponse({"ok": False, "error": "update_processing_error"}, status_code=200)
 
 @app.head("/uptime")
