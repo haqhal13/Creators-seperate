@@ -143,7 +143,7 @@ BOTS = {
             "⚡ *Instant access to the VIP link sent directly to your email!*\n"
             "📌 Got questions ? VIP link not working ? Contact support 🔍👀"
         ),
-        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-qdrQru770jXaX58HM",
+        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-",
         "SUPPORT_CONTACT": "@Sebvip",
         "PAYMENT_INFO": {
             # ⚠️ swap to the real £10 variant when ready
@@ -215,6 +215,7 @@ BOTS = {
 }
 
 APPS: dict[str, Application] = {}
+STARTUP_RESULTS: dict[str, str] = {}  # brand -> "ok" or error message
 
 # ---------------- Helpers ----------------
 def brand_uses_plan_step(cfg: dict) -> bool:
@@ -500,7 +501,6 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         method = parts[2] if len(parts) > 2 else "payment"
         nice = "Card" if method == "card" else ("PayPal" if method == "paypal" else ("Crypto" if method == "crypto" else "payment"))
         plan_text = context.user_data.get("plan_text", "N/A")
-
         await admin_ping(context, (
             "📝 **Payment Notification**\n"
             f"🏷️ **Brand:** {brand_title_plain}\n"
@@ -803,56 +803,113 @@ async def root():
 async def uptime():
     return JSONResponse({"status": "online", "uptime": str(datetime.now() - START_TIME)})
 
+@app.get("/status")
+async def status():
+    return JSONResponse({
+        "loaded_bots": list(APPS.keys()),
+        "startup_results": STARTUP_RESULTS,
+        "uptime": str(datetime.now() - START_TIME),
+    })
+
+# -------- Fault-tolerant startup: one bad bot won't block others --------
 @app.on_event("startup")
 async def on_startup():
     for brand, cfg in BOTS.items():
-        token = cfg["TOKEN"]
-        if not token or token.startswith("PUT-"):
-            log.warning(f"[{brand}] No token set, skipping.")
-            continue
-        app_obj = Application.builder().token(token).updater(None).build()
-        if brand == "zaystheway_vip":
-            # ZTW exact flow
-            app_obj.add_handler(CommandHandler("start", ztw_start))
-            app_obj.add_handler(CallbackQueryHandler(ztw_handle_subscription, pattern="select_.*"))
-            app_obj.add_handler(CallbackQueryHandler(ztw_handle_payment, pattern="payment_.*"))
-            app_obj.add_handler(CallbackQueryHandler(ztw_confirm_payment, pattern="paid"))
-            app_obj.add_handler(CallbackQueryHandler(ztw_handle_back, pattern="back"))
-            app_obj.add_handler(CallbackQueryHandler(ztw_handle_support, pattern="support"))
-            app_obj.add_handler(CallbackQueryHandler(ztw_handle_faq, pattern="faq"))
-            app_obj.add_handler(CallbackQueryHandler(ztw_copy_buttons, pattern="copy_.*"))
-            # Optional uptime ping
-            try:
-                async with httpx.AsyncClient(timeout=10) as client:
-                    await client.get(f"{BASE_URL}/uptime")
-                log.info("[zaystheway_vip] Uptime Monitoring OK")
-            except Exception as e:
-                log.warning(f"[zaystheway_vip] Uptime ping failed: {e}")
-        else:
-            # Shared flow
-            app_obj.add_handler(CommandHandler("start", start))
-            app_obj.add_handler(CallbackQueryHandler(on_cb))
-        app_obj.bot_data["brand"] = brand
-        await app_obj.initialize()
-        # Set webhook per brand (delete + set)
         try:
-            await app_obj.bot.delete_webhook(drop_pending_updates=True)
-            await app_obj.bot.set_webhook(f"{BASE_URL}/webhook/{brand}", allowed_updates=["message", "callback_query"])
-            log.info(f"[{brand}] Webhook set to {BASE_URL}/webhook/{brand}")
+            token = cfg["TOKEN"]
+            if not token or token.startswith("PUT-"):
+                msg = f"[{brand}] No/placeholder token, skipping."
+                log.warning(msg)
+                STARTUP_RESULTS[brand] = "skipped:no_token"
+                continue
+
+            # Build app per brand
+            app_obj = Application.builder().token(token).updater(None).build()
+
+            # Handlers per brand
+            if brand == "zaystheway_vip":
+                app_obj.add_handler(CommandHandler("start", ztw_start))
+                app_obj.add_handler(CallbackQueryHandler(ztw_handle_subscription, pattern="select_.*"))
+                app_obj.add_handler(CallbackQueryHandler(ztw_handle_payment, pattern="payment_.*"))
+                app_obj.add_handler(CallbackQueryHandler(ztw_confirm_payment, pattern="paid"))
+                app_obj.add_handler(CallbackQueryHandler(ztw_handle_back, pattern="back"))
+                app_obj.add_handler(CallbackQueryHandler(ztw_handle_support, pattern="support"))
+                app_obj.add_handler(CallbackQueryHandler(ztw_handle_faq, pattern="faq"))
+                app_obj.add_handler(CallbackQueryHandler(ztw_copy_buttons, pattern="copy_.*"))
+                # Optional uptime ping (non-fatal if it fails)
+                try:
+                    async with httpx.AsyncClient(timeout=10) as client:
+                        await client.get(f"{BASE_URL}/uptime")
+                    log.info(f"[{brand}] Uptime Monitoring OK")
+                except Exception as ping_err:
+                    log.warning(f"[{brand}] Uptime ping failed: {ping_err}")
+            else:
+                app_obj.add_handler(CommandHandler("start", start))
+                app_obj.add_handler(CallbackQueryHandler(on_cb))
+
+            app_obj.bot_data["brand"] = brand
+
+            # Initialize
+            try:
+                await app_obj.initialize()
+            except Exception as init_err:
+                STARTUP_RESULTS[brand] = f"init_error:{init_err}"
+                log.error(f"[{brand}] Initialize failed: {init_err}")
+                continue  # move on to next brand
+
+            # Webhook setup (delete + set)
+            try:
+                await app_obj.bot.delete_webhook(drop_pending_updates=True)
+                await app_obj.bot.set_webhook(
+                    f"{BASE_URL}/webhook/{brand}",
+                    allowed_updates=["message", "callback_query"]
+                )
+                log.info(f"[{brand}] Webhook set to {BASE_URL}/webhook/{brand}")
+            except Exception as wh_err:
+                STARTUP_RESULTS[brand] = f"webhook_error:{wh_err}"
+                log.error(f"[{brand}] Failed to set webhook: {wh_err}")
+                # still keep the app in APPS so brand can be retried later
+                APPS[brand] = app_obj
+                continue
+
+            # Success
+            APPS[brand] = app_obj
+            STARTUP_RESULTS[brand] = "ok"
+            log.info(f"[{brand}] Bot initialized.")
+
         except Exception as e:
-            log.error(f"[{brand}] Failed to set webhook: {e}")
+            # Catch-all so one bot never kills the loop
+            STARTUP_RESULTS[brand] = f"fatal_error:{e}"
+            log.exception(f"[{brand}] Fatal error during startup (skipping): {e}")
 
-        APPS[brand] = app_obj
-        log.info(f"[{brand}] Bot initialized.")
+    # Summary
+    ok = [b for b, s in STARTUP_RESULTS.items() if s == "ok"]
+    bad = {b: s for b, s in STARTUP_RESULTS.items() if s != "ok"}
+    log.info(f"Startup summary -> OK: {ok} | Issues: {bad}")
 
+# -------- Robust webhook: per-update isolation --------
 @app.post("/webhook/{brand}")
 async def webhook(brand: str, request: Request):
     app_obj = APPS.get(brand)
     if not app_obj:
-        return JSONResponse({"error": "unknown brand"}, status_code=404)
-    update = Update.de_json(await request.json(), app_obj.bot)
-    await app_obj.process_update(update)
-    return JSONResponse({"ok": True})
+        # Brand not initialized — return 404 so Telegram stops retrying this URL
+        return JSONResponse({"error": f"unknown or inactive brand '{brand}'"}, status_code=404)
+
+    try:
+        payload = await request.json()
+    except Exception as e:
+        log.error(f"[{brand}] Bad JSON in webhook: {e}")
+        return JSONResponse({"ok": False, "error": "bad_json"}, status_code=400)
+
+    try:
+        update = Update.de_json(payload, app_obj.bot)
+        await app_obj.process_update(update)
+        return JSONResponse({"ok": True})
+    except Exception as e:
+        # Swallow per-update errors so the server stays up
+        log.exception(f"[{brand}] Error processing update: {e}")
+        # Return 200 so Telegram doesn't hammer retries forever
+        return JSONResponse({"ok": False, "error": "update_processing_error"}, status_code=200)
 
 @app.head("/uptime")
 async def uptime_head():
