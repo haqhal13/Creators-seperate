@@ -61,51 +61,26 @@ SHARED_TEXT = {
         "📨 Contact: {support}\n\n"
         "Include your **Order #** or **proof of payment** for fastest help."
     ),
-    "faq": (
-        "❓ **FAQ**\n\n"
-        "**Getting Your Link**\n"
-        "• Card / Apple Pay / Google Pay → Sent instantly to your checkout email.\n"
-        "• PayPal / Crypto → Sent manually after proof of payment.\n\n"
-        "**Didn’t Get Email?**\n"
-        "• Check spam/junk folder.\n"
-        "• Make sure your checkout email was correct.\n"
-        "• Still missing? Contact {support}.\n\n"
-        "**Proof Needed (PayPal/Crypto)**\n"
-        "• Screenshot or transaction ID/hash.\n"
-        "• Include the **bot name** you purchased.\n\n"
-        "**Upgrades**\n"
-        "• ✅ Tap ⬆️ Upgrade: HOB VIP CREATOR below (best value).\n\n"
-        "**Billing Name**\n"
-        "• Shows as an **education company** (nothing weird).\n"
-        "• Want a custom label? DM {support} before paying.\n\n"
-        "**Renewals**\n"
-        "• 1 / 3 / 6-month plans renew automatically.\n"
-        "• Lifetime = permanent (no renewal).\n\n"
-        "**Cancelling**\n"
-        "• Cancel anytime via your provider (Shopify / PayPal / wallet).\n"
-        "• Access stays until your period ends.\n\n"
-        "**PayPal / Crypto Timing**\n"
-        "• Typically **5–15 min** after proof is sent.\n"
-        "• Can be longer outside UK hours.\n\n"
-        "**Need Help?**\n"
-        "• Message {support} — we’ll sort payments, links, upgrades fast."
-    ),
 }
 
 # ---------- Helpers: descriptions & labels ----------
 def lifetime_desc_lines(display_name: str) -> str:
     return (
         f"🎥 Lifetime access to all **{display_name}’s tapes & pics** 👑\n"
-        "📈 Updated frequently with brand new drops whenever they post tapes\n\n"
-        "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+        "📈 Updated frequently with brand new drops whenever they post tapes"
     )
 
+def monthly_desc_lines(extra: str | None = None) -> str:
+    base = "📈 Updated frequently with brand new drops"
+    return base if not extra else f"{base}\n{extra}"
+
 def start_page_body(title: str, description_block: str) -> str:
-    # Start page should be short + end with dynamic Last Updated (no extra lines)
+    # Short start page ending with dynamic Last Updated line, then the billing note
     return (
         f"{title}\n\n"
         f"{description_block}\n\n"
-        f"📅 Last Updated: {datetime.now().strftime(LAST_UPDATED_FMT)}"
+        f"📅 Last Updated: {datetime.now().strftime(LAST_UPDATED_FMT)}\n"
+        f"{DISCLAIMER}"
     )
 
 def parse_price_number(gbp_str: str) -> float:
@@ -113,7 +88,7 @@ def parse_price_number(gbp_str: str) -> float:
     return float(m[0]) if m else 0.0
 
 def plan_label(cfg: dict, key: str, fallback: str) -> str:
-    # Use provided label; keep it simple (no savings math here by request)
+    # Use provided label; keep it simple (no savings math here)
     return cfg.get("PLANS", {}).get(key, {}).get("label", fallback)
 
 def get_plan_price_text(cfg: dict, plan_key: str | None, fallback_price: str) -> str:
@@ -208,8 +183,7 @@ BOTS = {
         "DESCRIPTION": start_page_body(
             "💎 ExclusiveByAj VIP",
             "💎 Exclusive drops curated by AJ — **Early Access**\n"
-            "📈 Updated frequently with brand new drops\n\n"
-            "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+            f"{monthly_desc_lines(None)}"
         ),
         "TOKEN": "8213329606:AAFRtJ3_6RkVrrNk_cWPTExOk8OadIUC314",
         "SUPPORT_CONTACT": "@Sebvip",
@@ -228,8 +202,7 @@ BOTS = {
         "DESCRIPTION": start_page_body(
             "💎 ZTW VIP",
             "💎 All up to date content — OF, Patreon, Fansly\n"
-            "⚡ Instant access sent to your email after checkout\n\n"
-            "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+            "⚡ Instant access sent to your email after checkout"
         ),
         "TOKEN": "7718373318:-qdrQru770jXaX58HM",
         "SUPPORT_CONTACT": "@Sebvip",
@@ -254,8 +227,7 @@ BOTS = {
         "DESCRIPTION": start_page_body(
             "💎 HOB VIP CREATOR BUNDLE",
             "🏛️ Central hub for **all single creator VIP groups**\n"
-            "✅ Includes: B1G BURLZ, Monica Minx, Mexicuban, LIL.BONY1, ExclusiveByAj, ZTW\n\n"
-            "🔒 Worried about what will show up on your card? → **Check the FAQ**"
+            "✅ Includes: B1G BURLZ, Monica Minx, Mexicuban, LIL.BONY1, ExclusiveByAj, ZTW"
         ),
         "TOKEN": "8332913011:AAEz8LpOgG_FGEmP_7eqrLh23E7_MUNvuvE",
         "SUPPORT_CONTACT": "@Sebvip",
@@ -303,8 +275,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard.append([InlineKeyboardButton("💸 PayPal (read note)", callback_data=f"{brand}:paypal")])
         keyboard.append([InlineKeyboardButton("₿ Crypto (instructions)", callback_data=f"{brand}:crypto")])
 
-    # FAQ + Support
-    keyboard.append([InlineKeyboardButton("❓ FAQ", callback_data=f"{brand}:faq")])
+    # Support (FAQ removed)
     keyboard.append([InlineKeyboardButton("💬 Support", callback_data=f"{brand}:support")])
 
     # Upsell
@@ -324,7 +295,7 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = q.data
 
     # ZTW-specific routes
-    if data.startswith(("select_", "payment_", "paid", "back", "support", "faq", "copy_")):
+    if data.startswith(("select_", "payment_", "paid", "back", "support", "copy_")):
         return await ztw_router(q, context)
 
     parts = data.split(":")
@@ -345,8 +316,6 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         context.user_data["plan_text"] = plan_display or "PLAN"
 
-        # The specific copy you asked for on this screen:
-        plan_text_msg = "1 MONTH plan" if plan_key and plan_key.startswith("1_") else (plan_display or "PLAN").title()
         prepay_msg = (
             f"⭐️ You have chosen the **{plan_display}**.\n\n"
             "💳 **Apple Pay / Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
@@ -524,15 +493,6 @@ async def on_cb(update: Update, context: ContextTypes.DEFAULT_TYPE):
         kb.append(upsell_button_row())
         return await q.edit_message_text(text=text, reply_markup=InlineKeyboardMarkup(kb), parse_mode="Markdown")
 
-    if action == "faq":
-        kb = [[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]
-        kb.append(upsell_button_row())
-        return await q.edit_message_text(
-            text=SHARED_TEXT["faq"].format(support=support),
-            reply_markup=InlineKeyboardMarkup(kb),
-            parse_mode="Markdown",
-        )
-
     if action == "support":
         kb = [[InlineKeyboardButton("🔙 Back", callback_data=f"{brand}:back")]]
         kb.append(upsell_button_row())
@@ -559,7 +519,6 @@ async def ztw_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton(ztw_make_plan_label("1_month"), callback_data="select_1_month")],
         [InlineKeyboardButton(ztw_make_plan_label("3_month"), callback_data="select_3_month")],
         [InlineKeyboardButton(ztw_make_plan_label("6_month"), callback_data="select_6_month")],
-        [InlineKeyboardButton("❓ FAQ", callback_data="faq")],
         [InlineKeyboardButton("💬 Support", callback_data="support")],
     ]
     keyboard.append(upsell_button_row())
@@ -587,7 +546,6 @@ async def ztw_handle_subscription(update: Update, context: ContextTypes.DEFAULT_
         f"🕒 {datetime.now():%Y-%m-%d %H:%M:%S}"
     ))
 
-    # Same “how to pay” bullets you wanted
     message = (
         f"⭐️ You have chosen the **{plan_text}**.\n\n"
         "💳 **Apple Pay / Google Pay:** 🚀 Instant VIP access (link emailed immediately — check spam!).\n"
@@ -731,18 +689,6 @@ async def ztw_handle_support(update: Update, context: ContextTypes.DEFAULT_TYPE)
         parse_mode="Markdown"
     )
 
-async def ztw_handle_faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    support = BOTS["zaystheway_vip"]["SUPPORT_CONTACT"]
-    kb = [[InlineKeyboardButton("🔙 Back", callback_data="back")]]
-    kb.append(upsell_button_row())
-    await query.edit_message_text(
-        text=SHARED_TEXT["faq"].format(support=support),
-        reply_markup=InlineKeyboardMarkup(kb),
-        parse_mode="Markdown"
-    )
-
 async def ztw_handle_back(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -788,8 +734,6 @@ async def ztw_router(q, context):
         return await ztw_handle_back(q, context)
     if data == "support":
         return await ztw_handle_support(q, context)
-    if data == "faq":
-        return await ztw_handle_faq(q, context)
     if data in ("copy_paypal","copy_crypto"):
         return await ztw_copy_buttons(q, context)
 
@@ -832,7 +776,6 @@ async def on_startup():
                 app_obj.add_handler(CallbackQueryHandler(ztw_confirm_payment, pattern="paid"))
                 app_obj.add_handler(CallbackQueryHandler(ztw_handle_back, pattern="back"))
                 app_obj.add_handler(CallbackQueryHandler(ztw_handle_support, pattern="support"))
-                app_obj.add_handler(CallbackQueryHandler(ztw_handle_faq, pattern="faq"))
                 app_obj.add_handler(CallbackQueryHandler(ztw_copy_buttons, pattern="copy_.*"))
                 # Optional uptime ping (non-fatal)
                 try:
