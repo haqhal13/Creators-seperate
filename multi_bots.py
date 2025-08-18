@@ -18,7 +18,7 @@ app = FastAPI()
 START_TIME = datetime.now()
 
 # ---------------- Config ----------------
-BASE_URL = "https://creators-seperate.onrender.com"  # your Render domain
+BASE_URL = "https://ztw-bot.onrender.com/webhook"  # your Render domain
 ADMIN_CHAT_ID = 7914196017  # Admin pings go here for ALL brands
 PAID_DEBOUNCE_SECONDS = 60   # Anti-spam for "I've paid"
 
@@ -204,7 +204,7 @@ BOTS = {
             "💎 All up to date content — OF, Patreon, Fansly\n"
             "⚡ Instant access sent to your email after checkout"
         ),
-        "TOKEN": "7718373318:-qdrQru770jXaX58HM",
+        "TOKEN": "7718373318:AAGB0CFyuoAALtD0q-qdrQru770jXaX58HM",
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£15", "crypto": "£15"},
         "PLANS": {
