@@ -239,14 +239,14 @@ BOTS = {
         "SUPPORT_CONTACT": "@Sebvip",
         "PRICES": {"paypal": "£25", "crypto": "£25"},  # fallback for PayPal/Crypto text
         "PLANS": {
-            "1_month": {"label": "1 Month (£15)", "display": "1 MONTH", "price_gbp": "£15.00"},
-            "3_month": {"label": "🔥 Most Popular . 3 Months (£31)", "display": "3 MONTHS", "price_gbp": "£31.00", "popular": True},
-            "6_month": {"label": "6 Months (£58.50)", "display": "6 MONTHS", "price_gbp": "£58.50"},
+            "1_month": {"label": "1 Month (£23)", "display": "1 MONTH", "price_gbp": "£23.00"},
+            "3_month": {"label": "🔥 Most Popular . 3 Months (£38)", "display": "3 MONTHS", "price_gbp": "£38.00", "popular": True},
+            "6_month": {"label": "6 Months (£60)", "display": "6 MONTHS", "price_gbp": "£60.00"},
         },
         "PAYMENT_INFO": {
-            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_1M:1",
-            "shopify_3m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_3M:1",
-            "shopify_6m": "https://nt9qev-td.myshopify.com/cart/REPLACE_HOB_6M:1",
+            "shopify_1m": "https://nt9qev-td.myshopify.com/cart/56110896808310:1",
+            "shopify_3m": "https://nt9qev-td.myshopify.com/cart/56110898119030:1",
+            "shopify_6m": "https://nt9qev-td.myshopify.com/cart/15301026349430:1",
             "crypto": "https://t.me/+yourCryptoRoom",
             "paypal": "@YourPayPalTag (F&F only)",
         },
